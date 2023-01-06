@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<VersionPrefix>0.1.0</VersionPrefix>
+	<VersionSuffix></VersionSuffix>
+	<PackageProjectUrl>https://github.com/wsct/WSCT-GlobalPlatform</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>wsct;smartcard;globalplatform</PackageTags>
+    <RepositoryUrl>https://github.com/wsct/WSCT-GlobalPlatform</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Authors>Sylvain Vernois</Authors>
+    <PackageOutputPath>$(OutputPath)</PackageOutputPath>
+    <Title>WSCT GlobalPlatform Library</Title>
+    <Description>A library implementing some parts of GlobalPlatform for the WSCT framework.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WSCT.Core" Version="6.4.0" />
+  </ItemGroup>
+
+</Project>
