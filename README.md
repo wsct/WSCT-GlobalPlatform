@@ -17,7 +17,7 @@ The current status of this project is *work in progress*.
   - [x] Automatic wrapping / unwrapping of APDU
   - [x] CMAC
   - [ ] RMAC
-  - [ ] ENC
+  - [x] CDEC
 
 ## Code sample
 

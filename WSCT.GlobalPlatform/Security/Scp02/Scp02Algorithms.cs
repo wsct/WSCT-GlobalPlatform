@@ -51,11 +51,9 @@ namespace WSCT.GlobalPlatform.Security.Scp02
                 mac = message.GenerateDesMacCbc(desKey, mac, 0, message.Length - lastMessageBlockLength);
             }
 
-            var finalBlocks = new byte[8];
-            Array.Copy(message, message.Length - lastMessageBlockLength, finalBlocks, 0, lastMessageBlockLength);
-            Array.Copy(Constants.Padding, 0, finalBlocks, lastMessageBlockLength, 8 - lastMessageBlockLength);
-
-            mac = finalBlocks.GenerateTripleDesMacCbc(sessionKey, mac, 0, 8);
+            mac = message.AsSpan(message.Length - lastMessageBlockLength, lastMessageBlockLength)
+                .PadDataForDes()
+                .GenerateTripleDesMacCbc(sessionKey, mac, 0, 8);
 
             return mac;
         }

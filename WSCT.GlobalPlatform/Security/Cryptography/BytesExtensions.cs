@@ -245,5 +245,36 @@ namespace WSCT.GlobalPlatform.Security.Cryptography
         }
 
         #endregion
+
+        #region >> PadDataForDes
+
+        /// <summary>
+        /// Returns a new array consisting of <paramref name="input"/> bytes and a DES padding ('80 00 ... 00')
+        /// </summary>
+        /// <param name="input">Input data to be padded.</param>
+        /// <returns>The padded data.</returns>
+        public static byte[] PadDataForDes(this byte[] input)
+        {
+            return input.AsSpan()
+                .PadDataForDes();
+        }
+
+        /// <summary>
+        /// Returns a new array consisting of <paramref name="input"/> bytes and a DES padding ('80 00 ... 00')
+        /// </summary>
+        /// <param name="input">Input data to be padded.</param>
+        /// <returns>The padded data.</returns>
+        public static byte[] PadDataForDes(this Span<byte> input)
+        {
+            var lastInputBlockLength = input.Length % 8;
+
+            var output = new byte[8 * (input.Length / 8 + 1)];
+            input.CopyTo(output);
+            Array.Copy(Constants.Padding, 0, output, input.Length, 8 - lastInputBlockLength);
+
+            return output;
+        }
+
+        #endregion
     }
 }

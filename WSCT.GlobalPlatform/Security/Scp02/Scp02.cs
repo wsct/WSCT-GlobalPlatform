@@ -78,7 +78,10 @@ namespace WSCT.GlobalPlatform.Security.Scp02
                 cApdu = WrapForCMac(cApdu, scpData);
             }
 
-            // TODO Check if ENC is needed
+            if ((scpData.SecurityLevel & SecurityLevel.CDecryption) != 0)
+            {
+                cApdu = WrapForCDec(cApdu, scpData);
+            }
 
             return cApdu;
         }
@@ -87,65 +90,101 @@ namespace WSCT.GlobalPlatform.Security.Scp02
         {
             var scpSpecifics = (Scp02Specifics)scpData.Specifics;
 
-            if ((scpData.SecurityLevel & SecurityLevel.CMac) != 0)
+            if ((scpData.SecurityLevel & SecurityLevel.CMac) == 0)
             {
-                if (cApdu.HasLc is false)
-                {
-                    cApdu.Udc = Array.Empty<byte>();
-                }
-
-                if (scpSpecifics.SubIdentifier.UseCMacOnUnmodifiedApdu is false)
-                {
-                    cApdu.Cla |= 0x04;
-                    cApdu.Lc += 8;
-                }
-
-                // Save Le state and remove it from the C-APDU (C-MAC does not use it)
-                bool initiallyHasLe = cApdu.HasLe;
-                uint le = 0;
-                if (initiallyHasLe)
-                {
-                    le = cApdu.Le;
-                    cApdu.HasLe = false;
-                }
-
-                byte[] iv;
-                if (scpSpecifics.SubIdentifier.UseIcvEncryptionforCMacSession)
-                {
-                    // IV is obtained by encrypting LastCMac using first half of CMac session Key and LastCMac itself as the IV
-                    iv = scpSpecifics.LastCMac
-                       .EncryptDesEcb(scpData.SessionKeys.CMac.AsSpan(0, 8).ToArray(), scpSpecifics.LastCMac);
-                }
-                else
-                {
-                    iv = Constants.ICV;
-                }
-
-                // Calculate the C-APDU C-MAC
-                var mac = Scp02Algorithms
-                    .GenerateCMac(scpData.SessionKeys.CMac, iv, cApdu.BinaryCommand);
-
-                scpSpecifics.LastCMac = mac;
-
-                // Store C-MAC in last bytes of the UDC
-                var udc = new byte[cApdu.Lc];
-                Array.Copy(cApdu.Udc, 0, udc, 0, cApdu.Lc - 8);
-                Array.Copy(mac, 0, udc, udc.Length - 8, 8);
-
-                cApdu.Udc = udc;
-
-                // Restore Le state
-                if (initiallyHasLe)
-                {
-                    cApdu.Le = le;
-                }
-
-                if (scpSpecifics.SubIdentifier.UseCMacOnUnmodifiedApdu is true)
-                {
-                    cApdu.Cla |= 0x04;
-                    cApdu.Lc += 8;
-                }
+                return cApdu;
             }
+
+            if (cApdu.HasLc is false)
+            {
+                cApdu.Udc = Array.Empty<byte>();
+            }
+
+            if (scpSpecifics.SubIdentifier.UseCMacOnUnmodifiedApdu is false)
+            {
+                cApdu.Cla |= 0x04;
+                cApdu.Lc += 8;
+            }
+
+            // Save Le state and remove it from the C-APDU (C-MAC does not use it)
+            bool initiallyHasLe = cApdu.HasLe;
+            uint le = 0;
+            if (initiallyHasLe)
+            {
+                le = cApdu.Le;
+                cApdu.HasLe = false;
+            }
+
+            byte[] iv;
+            if (scpSpecifics.SubIdentifier.UseIcvEncryptionforCMacSession)
+            {
+                // IV is obtained by encrypting LastCMac using first half of CMac session Key and LastCMac itself as the IV
+                iv = scpSpecifics.LastCMac
+                   .EncryptDesEcb(scpData.SessionKeys.CMac.AsSpan(0, 8).ToArray(), scpSpecifics.LastCMac);
+            }
+            else
+            {
+                iv = Constants.ICV;
+            }
+
+            // Calculate the C-APDU C-MAC
+            var mac = Scp02Algorithms
+                .GenerateCMac(scpData.SessionKeys.CMac, iv, cApdu.BinaryCommand);
+
+            scpSpecifics.LastCMac = mac;
+
+            // Store C-MAC in last bytes of the UDC
+            var udc = new byte[cApdu.Lc];
+            Array.Copy(cApdu.Udc, 0, udc, 0, cApdu.Lc - 8);
+            Array.Copy(mac, 0, udc, udc.Length - 8, 8);
+
+            cApdu.Udc = udc;
+
+            // Restore Le state
+            if (initiallyHasLe)
+            {
+                cApdu.Le = le;
+            }
+
+            if (scpSpecifics.SubIdentifier.UseCMacOnUnmodifiedApdu is true)
+            {
+                cApdu.Cla |= 0x04;
+                cApdu.Lc += 8;
+            }
+
+            return cApdu;
+        }
+
+        private CommandAPDU WrapForCDec(CommandAPDU cApdu, SecureChannelData scpData)
+        {
+            if ((scpData.SecurityLevel & SecurityLevel.CDecryption) == 0)
+            {
+                return cApdu;
+            }
+
+            var dataLength = cApdu.HasLc ? (int)cApdu.Lc : 0;
+            if (dataLength == 0)
+            {
+                return cApdu;
+            }
+
+            // Isolate clear text data and CMAC
+            var macLength = (scpData.SecurityLevel & SecurityLevel.CMac) == 0 ? 0 : 8;
+            dataLength -= macLength;
+
+            var udc = cApdu.Udc.AsSpan();
+            var data = cApdu.Udc.AsSpan(0, dataLength);
+            var mac = cApdu.Udc.AsSpan(udc.Length - macLength);
+
+            // Encrypt the padded clear text data
+            var encryptedData = data
+                .PadDataForDes()
+                .EncryptTripleDesCbc(scpData.SessionKeys.Enc, Constants.ICV);
+
+            // UDC = encrypted data | CMAC
+            cApdu.Udc = new byte[encryptedData.Length + macLength];
+            encryptedData.CopyTo(cApdu.Udc, 0);
+            mac.CopyTo(cApdu.Udc.AsSpan(encryptedData.Length));
 
             return cApdu;
         }

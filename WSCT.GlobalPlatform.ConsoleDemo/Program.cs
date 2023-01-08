@@ -85,7 +85,7 @@ try
         .AuthenticateCard();
 
     gpCard
-        .ProcessExternalAuthenticate(SecurityLevel.CMac /*| SecurityLevel.CEnc */)
+        .ProcessExternalAuthenticate(SecurityLevel.CMac | SecurityLevel.CDecryption)
         .ThrowIfNotSuccess()
         .ThrowIfSWNot9000();
 
