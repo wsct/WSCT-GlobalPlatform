@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WSCT.Wrapper.Desktop" Version="1.3.0" />
+    <PackageReference Include="WSCT.Wrapper.Desktop" Version="1.3.2" />
   </ItemGroup>
 
   <ItemGroup>

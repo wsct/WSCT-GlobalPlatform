@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WSCT.Core" Version="6.4.0" />
+    <PackageReference Include="WSCT.Core" Version="6.5.2" />
   </ItemGroup>
 
 </Project>

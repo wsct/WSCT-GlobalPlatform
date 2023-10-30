@@ -11,6 +11,7 @@ using WSCT.GlobalPlatform.Commands;
 using WSCT.GlobalPlatform;
 using WSCT.Core.Fluent.Helpers;
 using WSCT.GlobalPlatform.ConsoleDemo.Helpers;
+using WSCT.Linq;
 
 var SEnc = "40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F".FromHexa();
 var SMac = "40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F".FromHexa();
@@ -40,7 +41,9 @@ cardContext
 
 #endregion
 
-var cardChannel = new CardChannelObservable(new CardChannel(cardContext, cardContext.Readers[0]));
+var cardChannel = new CardChannel(cardContext, cardContext.Readers[0])
+    .ToT0Friendly()
+    .ToObservable();
 logger.Observe(cardChannel);
 
 try
@@ -56,7 +59,7 @@ try
     var gpCard = new GlobalPlatformCard(cardChannel);
 
     gpCard
-        .ProcessSelectCardManager()
+        .ProcessSelectCardManager("A0 00 00 01 51 00".FromHexa())
         .ThrowIfNotSuccess()
         .ThrowIfSWNot9000();
 

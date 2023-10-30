@@ -4,6 +4,7 @@ using WSCT.GlobalPlatform.Security.Scp02;
 using WSCT.GlobalPlatform.Security;
 using WSCT.ISO7816;
 using WSCT.Core.Fluent.Helpers;
+using WSCT.GlobalPlatform.JavaCard;
 
 namespace WSCT.GlobalPlatform
 {
@@ -118,6 +119,47 @@ namespace WSCT.GlobalPlatform
                 .Transmit(_cardChannel);
 
             return selectManager;
+        }
+
+        public CommandResponsePair ProcessInstallForInstall(Span<byte> loadFileAid, Span<byte> moduleAid, Span<byte> applicationAid, Span<byte> privileges, Span<byte> installParameters, Span<byte> installToken)
+            => ProcessCommand(new InstallForInstallCommand(loadFileAid, moduleAid, applicationAid, privileges, installParameters, installToken));
+
+        public CommandResponsePair ProcessInstallForInstallAndMakeSelectable(Span<byte> loadFileAid, Span<byte> moduleAid, Span<byte> applicationAid, Span<byte> privileges, Span<byte> installParameters, Span<byte> installToken)
+            => ProcessCommand(new InstallForInstallAndMakeSelectableCommand(loadFileAid, moduleAid, applicationAid, privileges, installParameters, installToken));
+
+        public CommandResponsePair ProcessInstallForLoad(byte[] loadFileAid, byte[] securityDomainAid, byte[] loadFileDataBlockHash, byte[] loadParameters, byte[] loadToken)
+            => ProcessCommand(new InstallForLoadCommand(loadFileAid, securityDomainAid, loadFileDataBlockHash, loadParameters, loadToken));
+
+        public CommandResponsePair ProcessInstallForMakeSelectable(Span<byte> applicationAid, Span<byte> privileges, Span<byte> installParameters, Span<byte> installToken)
+            => ProcessCommand(new InstallForMakeSelectableCommand(applicationAid, privileges, installParameters, installToken));
+
+        public CommandResponsePair ProcessLoad(string pathToCapFile)
+            => ProcessLoad(File.OpenRead(pathToCapFile));
+
+        public CommandResponsePair ProcessLoad(Stream rawCapFileStream)
+        {
+            var capFile = new CapFile(rawCapFileStream);
+
+            var loadData = capFile.GetLoadData();
+            byte blockNumber = 0x00;
+            var loadDataSentLength = 0;
+
+            CommandResponsePair lastCrp = null;
+            foreach (var chunk in loadData.Chunk(0xE0))
+            {
+                loadDataSentLength += chunk.Length;
+
+                lastCrp = ProcessCommand(new LoadCommand(loadDataSentLength == loadData.Length, blockNumber, chunk));
+
+                blockNumber++;
+
+                if (lastCrp.RApdu.StatusWord != 0x9000)
+                {
+                    break;
+                }
+            }
+
+            return lastCrp;
         }
 
         #endregion

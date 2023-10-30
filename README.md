@@ -10,6 +10,11 @@ The current status of this project is *work in progress*.
   - [x] `SELECT CARD MANAGER`
   - [x] `GET CARD DATA`
   - [x] `GET DATA`
+  - [x] `INSTALL [for load]`
+  - [x] `INSTALL [for install]`
+  - [x] `INSTALL [for make selectable]`
+  - [x] `INSTALL [for install and make selectable]`
+  - [x] `LOAD`
 - SCP02 support:
   - [x] 3-keys
   - [ ] 1-key
