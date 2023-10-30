@@ -42,6 +42,26 @@ namespace WSCT.GlobalPlatform
             return _scpData.SessionKeys;
         }
 
+        public CommandResponsePair ProcessCommand(CommandAPDU cApdu)
+        {
+            var command = _scp.Wrap(cApdu, _scpData);
+
+            var crp = command
+                .Transmit(_cardChannel);
+
+            return crp;
+        }
+
+        #region >> ProcessDelete
+
+        public CommandResponsePair ProcessDelete(Span<byte> aid, bool deleteRelated = true)
+            => ProcessCommand(new DeleteCommand(aid, deleteRelated));
+
+        public CommandResponsePair ProcessDelete(Span<byte> aid, Span<byte> tokenIssuerId, Span<byte> cardImageNumber, Span<byte> applicationProviderIdentifier, Span<byte> tokenIdentifierNumber, Span<byte> deleteToken, bool deleteRelated)
+            => ProcessCommand(new DeleteCommand(aid, tokenIssuerId, cardImageNumber, applicationProviderIdentifier, tokenIdentifierNumber, deleteToken, deleteRelated));
+
+        #endregion
+
         public CommandResponsePair ProcessExternalAuthenticate(SecurityLevel securityLevel)
         {
             _scpData.SecurityLevel = securityLevel;
@@ -69,6 +89,8 @@ namespace WSCT.GlobalPlatform
             return crp;
         }
 
+        #region >> ProcessInitializeUpdate
+
         public CommandResponsePair ProcessInitializeUpdate(SecureChannelProtocolDetails scp, byte keySetVersion, byte keyIdentifier)
         {
             var hostChallenge = new byte[8];
@@ -93,33 +115,9 @@ namespace WSCT.GlobalPlatform
             return crp;
         }
 
-        public CommandResponsePair ProcessCommand(CommandAPDU cApdu)
-        {
-            var command = _scp.Wrap(cApdu, _scpData);
+        #endregion
 
-            var crp = command
-                .Transmit(_cardChannel);
-
-            return crp;
-        }
-
-        #region >> ProcessSelectCardManager
-
-        public CommandResponsePair ProcessSelectCardManager()
-        {
-            var selectManager = new SelectCardManager()
-                .Transmit(_cardChannel);
-
-            return selectManager;
-        }
-
-        public CommandResponsePair ProcessSelectCardManager(byte[] aid)
-        {
-            var selectManager = new SelectCardManager(aid)
-                .Transmit(_cardChannel);
-
-            return selectManager;
-        }
+        #region >> ProcessInstall*
 
         public CommandResponsePair ProcessInstallForInstall(Span<byte> loadFileAid, Span<byte> moduleAid, Span<byte> applicationAid, Span<byte> privileges, Span<byte> installParameters, Span<byte> installToken)
             => ProcessCommand(new InstallForInstallCommand(loadFileAid, moduleAid, applicationAid, privileges, installParameters, installToken));
@@ -133,8 +131,9 @@ namespace WSCT.GlobalPlatform
         public CommandResponsePair ProcessInstallForMakeSelectable(Span<byte> applicationAid, Span<byte> privileges, Span<byte> installParameters, Span<byte> installToken)
             => ProcessCommand(new InstallForMakeSelectableCommand(applicationAid, privileges, installParameters, installToken));
 
-        public CommandResponsePair ProcessLoad(string pathToCapFile)
-            => ProcessLoad(File.OpenRead(pathToCapFile));
+        #endregion
+
+        #region >> ProcessLoad
 
         public CommandResponsePair ProcessLoad(Stream rawCapFileStream)
         {
@@ -160,6 +159,29 @@ namespace WSCT.GlobalPlatform
             }
 
             return lastCrp;
+        }
+
+        public CommandResponsePair ProcessLoad(string pathToCapFile)
+            => ProcessLoad(File.OpenRead(pathToCapFile));
+
+        #endregion
+
+        #region >> ProcessSelectCardManager
+
+        public CommandResponsePair ProcessSelectCardManager()
+        {
+            var selectManager = new SelectCardManager()
+                .Transmit(_cardChannel);
+
+            return selectManager;
+        }
+
+        public CommandResponsePair ProcessSelectCardManager(byte[] aid)
+        {
+            var selectManager = new SelectCardManager(aid)
+                .Transmit(_cardChannel);
+
+            return selectManager;
         }
 
         #endregion

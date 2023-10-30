@@ -15,6 +15,7 @@ The current status of this project is *work in progress*.
   - [x] `INSTALL [for make selectable]`
   - [x] `INSTALL [for install and make selectable]`
   - [x] `LOAD`
+  - [x] `DELETE`
 - SCP02 support:
   - [x] 3-keys
   - [ ] 1-key
