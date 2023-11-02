@@ -2,7 +2,7 @@
 {
     public class Scp02SubIdentifier
     {
-        private byte _subIdentifier;
+        private readonly byte _subIdentifier;
 
         public Scp02SubIdentifier(byte subIdentifier)
         {
@@ -19,7 +19,7 @@
         /// <summary>"ICV set to MAC over AID" or "ICV set to zero"</summary>
         public bool UseIcvSetToMacOverAid => (_subIdentifier & 0x08) != 0x00;
         /// <summary>"ICV encryption for C-MAC session" or "No ICV encryption"</summary>
-        public bool UseIcvEncryptionforCMacSession => (_subIdentifier & 0x10) != 0x00;
+        public bool UseIcvEncryptionForCMacSession => (_subIdentifier & 0x10) != 0x00;
         /// <summary>"R-MAC support" or "No R-MAC support"</summary>
         public bool UseRMacSupport => (_subIdentifier & 0x20) != 0x00;
         /// <summary>"Well-known pseudo-random algorithm (card challenge)" or "Unspecified card challenge generation method"</summary>

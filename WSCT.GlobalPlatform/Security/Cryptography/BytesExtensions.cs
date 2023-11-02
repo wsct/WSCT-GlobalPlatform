@@ -179,6 +179,26 @@ namespace WSCT.GlobalPlatform.Security.Cryptography
             return input.GenerateDesMac(des, inputOffset, inputCount);
         }
 
+        /// <summary>
+        /// Computes the MAC of <paramref name="inputCount"/> bytes of <paramref name="input"/> from <paramref name="inputOffset"/> using DES-ECB with <paramref name="key"/> and <paramref name="iv"/>.
+        /// </summary>
+        /// <param name="input">Clear text data.</param>
+        /// <param name="key">DES key.</param>
+        /// <param name="iv">Initialization vector.</param>
+        /// <param name="inputOffset">Initial offset in <paramref name="input"/>.</param>
+        /// <param name="inputCount">Number of bytes to use to compute the MAC from<paramref name="inputOffset"/>.</param>
+        /// <returns>MAC value.</returns>
+        public static byte[] GenerateDesMacEcb(this byte[] input, byte[] key, byte[] iv, int inputOffset, int inputCount)
+        {
+            using var des = DES.Create();
+            des.Key = key;
+            des.IV = iv;
+            des.Mode = CipherMode.ECB;
+            des.Padding = PaddingMode.None;
+
+            return input.GenerateDesMac(des, inputOffset, inputCount);
+        }
+
         #endregion
 
         #region >> GenerateTripleDesMac *
@@ -239,6 +259,41 @@ namespace WSCT.GlobalPlatform.Security.Cryptography
             tripleDes.Key = key;
             tripleDes.IV = iv;
             tripleDes.Mode = CipherMode.CBC;
+            tripleDes.Padding = PaddingMode.None;
+
+            return input.GenerateTripleDesMac(tripleDes, inputOffset, inputCount);
+        }
+
+        /// <summary>
+        /// Computes the MAC of <paramref name="input"/> using 3DES-ECB with <paramref name="key"/> and <paramref name="iv"/>.
+        /// </summary>
+        /// <param name="input">Clear text data.</param>
+        /// <param name="key">3DES key.</param>
+        /// <param name="iv">Initialization vector.</param>
+        /// <returns>MAC value.</returns>
+        public static byte[] GenerateTripleDesMacEcb(this byte[] input, byte[] key, byte[] iv)
+        {
+            return input.GenerateTripleDesMacEcb(key, iv, 0, input.Length);
+        }
+
+        /// <summary>
+        /// Computes the MAC of <paramref name="inputCount"/> bytes of <paramref name="input"/> from <paramref name="inputOffset"/> using 3DES-ECB with <paramref name="key"/> and <paramref name="iv"/>.
+        /// </summary>
+        /// <param name="input">Clear text data.</param>
+        /// <param name="key">3DES key.</param>
+        /// <param name="iv">Initialization vector.</param>
+        /// <param name="inputOffset">Initial offset in <paramref name="input"/>.</param>
+        /// <param name="inputCount">Number of bytes to use to compute the MAC from<paramref name="inputOffset"/>.</param>
+        /// <returns>MAC value.</returns>
+        public static byte[] GenerateTripleDesMacEcb(this byte[] input, byte[] key, byte[] iv, int inputOffset, int inputCount)
+        {
+            _ = key ?? throw new ArgumentNullException(nameof(key));
+            _ = iv ?? throw new ArgumentNullException(nameof(iv));
+
+            using var tripleDes = TripleDES.Create();
+            tripleDes.Key = key;
+            tripleDes.IV = iv;
+            tripleDes.Mode = CipherMode.ECB;
             tripleDes.Padding = PaddingMode.None;
 
             return input.GenerateTripleDesMac(tripleDes, inputOffset, inputCount);

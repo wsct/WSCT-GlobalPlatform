@@ -1,6 +1,5 @@
 ﻿using WSCT.Core;
 using WSCT.GlobalPlatform.Commands;
-using WSCT.GlobalPlatform.Security.Scp02;
 using WSCT.GlobalPlatform.Security;
 using WSCT.ISO7816;
 using WSCT.Core.Fluent.Helpers;
@@ -102,7 +101,13 @@ namespace WSCT.GlobalPlatform
         public CommandResponsePair ProcessInitializeUpdate(SecureChannelProtocolDetails scp, byte keySetVersion, byte keyIdentifier, byte[] hostChallenge)
         {
             _scpData = new SecureChannelData(scp, keySetVersion, keyIdentifier, hostChallenge);
-            _scp = new Scp02(_scpData); // TODO Move this in a better place
+
+            _scp = scp.Identifier switch // TODO Move this in a better place
+            {
+                1 => new Security.Scp01.Scp01(_scpData),
+                2 => new Security.Scp02.Scp02(_scpData),
+                _ => throw new GlobalPlatformException($"Unsupported SCP: {scp.Identifier:X2}"),
+            };
 
             var crp = new InitializeUpdateCommand(keySetVersion, keyIdentifier, hostChallenge)
                 .Transmit(_cardChannel);

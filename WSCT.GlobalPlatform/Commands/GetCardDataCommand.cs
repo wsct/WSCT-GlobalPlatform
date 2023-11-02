@@ -2,9 +2,13 @@
 
 namespace WSCT.GlobalPlatform.Commands
 {
-    public class GetCardDataCommand : CommandAPDU
+    /// <summary>
+    /// GET DATA command to retrieve the tag '66': Card Data (or Security Domain Management Data)
+    /// </summary>
+    public class GetCardDataCommand : GetDataCommand
     {
-        public GetCardDataCommand() : base(0x00, 0xCA, 0x00, 0x66, 0x00)
+        public GetCardDataCommand()
+            : base(0x66)
         {
         }
     }

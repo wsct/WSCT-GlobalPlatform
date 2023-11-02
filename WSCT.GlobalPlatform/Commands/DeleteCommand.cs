@@ -3,6 +3,10 @@ using WSCT.ISO7816;
 
 namespace WSCT.GlobalPlatform.Commands
 {
+    /// <summary>
+    /// The DELETE command is used to delete a uniquely identifiable object such as an Executable Load File,
+    /// an Application, an Executable Load File and its related Applications or a key
+    /// </summary>
     public class DeleteCommand : CommandAPDU
     {
         public DeleteCommand(byte[] parameters)

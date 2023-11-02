@@ -116,7 +116,7 @@ namespace WSCT.GlobalPlatform.Security.Scp02
             }
 
             byte[] iv;
-            if (scpSpecifics.SubIdentifier.UseIcvEncryptionforCMacSession)
+            if (scpSpecifics.SubIdentifier.UseIcvEncryptionForCMacSession)
             {
                 // IV is obtained by encrypting LastCMac using first half of CMac session Key and LastCMac itself as the IV
                 iv = scpSpecifics.LastCMac
@@ -124,7 +124,7 @@ namespace WSCT.GlobalPlatform.Security.Scp02
             }
             else
             {
-                iv = Constants.ICV;
+                iv = scpSpecifics.LastCMac;
             }
 
             // Calculate the C-APDU C-MAC
