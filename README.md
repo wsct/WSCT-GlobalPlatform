@@ -10,12 +10,18 @@ The current status of this project is *work in progress*.
   - [x] `SELECT CARD MANAGER`
   - [x] `GET CARD DATA`
   - [x] `GET DATA`
+  - [x] `GET STATUS`
   - [x] `INSTALL [for load]`
   - [x] `INSTALL [for install]`
   - [x] `INSTALL [for make selectable]`
   - [x] `INSTALL [for install and make selectable]`
   - [x] `LOAD`
   - [x] `DELETE`
+- SCP01 support:
+  - [x] Mutual authentication (`INITIALIZE UPDATE`, `EXTERNAL AUTHENTICATE`)
+  - [x] Automatic wrapping / unwrapping of APDU
+  - [x] CMAC
+  - [ ] CDEC
 - SCP02 support:
   - [x] 3-keys
   - [ ] 1-key
@@ -52,7 +58,7 @@ try
     Console.WriteLine(gpCard.CardData);
 
     // Do SCP02 Mutual Authentication
-    var scpUsed = gpCard.CardData.SupportedScps.First(scp => scp.Identifier == 0x02);
+    var scpUsed = gpCard.CardData.SupportedScps.First(scp => scp.Identifier == 0x01 || scp.Identifier == 0x02);
 
     gpCard
         .ProcessInitializeUpdate(scpUsed, keyVersion, KeyIdentifier, hostChallenge);
