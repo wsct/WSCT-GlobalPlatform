@@ -21,7 +21,7 @@ The current status of this project is *work in progress*.
   - [x] Mutual authentication (`INITIALIZE UPDATE`, `EXTERNAL AUTHENTICATE`)
   - [x] Automatic wrapping / unwrapping of APDU
   - [x] CMAC
-  - [ ] CDEC
+  - [x] CDEC
 - SCP02 support:
   - [x] 3-keys
   - [ ] 1-key

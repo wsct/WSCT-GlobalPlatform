@@ -75,7 +75,10 @@ namespace WSCT.GlobalPlatform.Security.Scp01
                 cApdu = WrapForCMac(cApdu, scpData);
             }
 
-            // TODO Check if ENC is needed
+            if ((scpData.SecurityLevel & SecurityLevel.CDecryption) != 0)
+            {
+                cApdu = WrapForCDec(cApdu, scpData);
+            }
 
             return cApdu;
         }
@@ -137,6 +140,44 @@ namespace WSCT.GlobalPlatform.Security.Scp01
                     cApdu.Le = le;
                 }
             }
+
+            return cApdu;
+        }
+
+        private CommandAPDU WrapForCDec(CommandAPDU cApdu, SecureChannelData scpData)
+        {
+            if ((scpData.SecurityLevel & SecurityLevel.CDecryption) == 0)
+            {
+                return cApdu;
+            }
+
+            if (cApdu.HasLc is false)
+            {
+                return cApdu;
+            }
+
+            // Isolate UDC and CMAC
+            var macLength = (scpData.SecurityLevel & SecurityLevel.CMac) == 0 ? 0 : 8;
+            var originalLc = cApdu.Udc.Length - macLength;
+
+            var originalUdc = cApdu.Udc.AsSpan(0, originalLc);
+            var mac = cApdu.Udc.AsSpan(originalLc);
+
+            // Build the original Lc UDC bytes
+            var originalLcUdc = new byte[1 + originalLc].AsSpan();
+
+            originalLcUdc[0] = (byte)originalLc;
+            originalUdc.CopyTo(originalLcUdc[1..]);
+
+            // Encrypt the padded clear text data
+            var encryptedData = originalLcUdc
+                .PadDataForDes()
+                .EncryptTripleDesCbc(scpData.SessionKeys.Enc, Constants.ICV);
+
+            // Final APDU data = encrypted data | CMAC
+            cApdu.Udc = new byte[encryptedData.Length + macLength];
+            encryptedData.CopyTo(cApdu.Udc, 0);
+            mac.CopyTo(cApdu.Udc.AsSpan(encryptedData.Length));
 
             return cApdu;
         }
