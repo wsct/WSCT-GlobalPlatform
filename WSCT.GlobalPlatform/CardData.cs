@@ -6,7 +6,7 @@ namespace WSCT.GlobalPlatform
     public class CardData
     {
         public byte[]? GlobalPlatformVersion { get; private set; }
-        public IList<SecureChannelProtocolDetails>? SupportedScps { get; private set; }
+        public IList<SecureChannelProtocolDetails> SupportedScps { get; private set; } = Array.Empty<SecureChannelProtocolDetails>();
         public byte[]? CardIdentificationScheme { get; private set; }
         public byte[]? CardConfigurationDetails { get; private set; }
         public byte[]? CardDetails { get; private set; }

@@ -2,8 +2,16 @@
 
 namespace WSCT.GlobalPlatform
 {
+    /// <summary>
+    /// Application Identifier.
+    /// </summary>
     public record AID(byte[] Aid)
     {
+        /// <summary>
+        /// Parse the AID from the response data sent by the card.
+        /// </summary>
+        /// <param name="data">Response data.</param>
+        /// <returns>AID.</returns>
         public static AID ParseWithLength(Span<byte> data)
         {
             if (data.Length == 0)

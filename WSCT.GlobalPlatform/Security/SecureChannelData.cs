@@ -2,6 +2,9 @@
 
 namespace WSCT.GlobalPlatform.Security
 {
+    /// <summary>
+    /// The data used to manage a secure channel.
+    /// </summary>
     public class SecureChannelData
     {
         #region >> Properties (input of INITIALIZE UPDATE)
@@ -60,10 +63,10 @@ namespace WSCT.GlobalPlatform.Security
 
         public SecureChannelData ParseInitializeUpdateResponse(Span<byte> udr)
         {
-            KeyDiversificationData = udr.Slice(0, 10).ToArray();
-            KeyInformation = udr.Slice(10, 2).ToArray();
-            CardChallenge = udr.Slice(12, 8).ToArray();
-            CardCryptogram = udr.Slice(20, 8).ToArray();
+            KeyDiversificationData = udr[..10].ToArray();
+            KeyInformation = udr[10..12].ToArray();
+            CardChallenge = udr[12..20].ToArray();
+            CardCryptogram = udr[20..28].ToArray();
 
             return this;
         }

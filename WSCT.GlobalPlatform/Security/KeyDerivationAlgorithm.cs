@@ -2,8 +2,16 @@
 {
     #region >> KeyDerivationAlgorithm *
 
+    /// <summary>
+    /// A factory class used to create key derivation algorithms.
+    /// </summary>
     public class KeyDerivationAlgorithm
     {
+        /// <summary>
+        /// Creates a key derivation algorithm.
+        /// </summary>
+        /// <param name="identifier">The identifier of the key derivation algorithm.</param>
+        /// <returns>An instance of the key derivation algorithm.</returns>
         public static IKeyDerivationAlgorithm Create(KeyDerivationAlgorithmIdentifier identifier)
         {
             return identifier switch

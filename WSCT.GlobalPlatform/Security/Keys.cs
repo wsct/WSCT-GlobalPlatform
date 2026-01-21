@@ -2,6 +2,9 @@
 
 namespace WSCT.GlobalPlatform.Security
 {
+    /// <summary>
+    /// The secret keys used for establishing a secure channel protocol.
+    /// </summary>
     public record Keys(
         /// <summary>The static Encryption key</summary>
         byte[] Enc,

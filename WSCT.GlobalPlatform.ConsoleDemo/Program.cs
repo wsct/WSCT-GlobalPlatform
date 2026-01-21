@@ -70,7 +70,9 @@ try
 
     gpCard.CardData.Dump();
 
-    var scpUsed = gpCard.CardData.SupportedScps.First(scp => scp.Identifier == 0x02);
+    var scpUsed = gpCard.CardData.SupportedScps
+        .FirstOrDefault(scp => scp.Identifier == 0x02);
+    ArgumentNullException.ThrowIfNull(scpUsed, "SCP02 not supported by the card.");
 
     gpCard
         .ProcessInitializeUpdate(scpUsed, keyVersion, KeyIdentifier, hostChallenge)

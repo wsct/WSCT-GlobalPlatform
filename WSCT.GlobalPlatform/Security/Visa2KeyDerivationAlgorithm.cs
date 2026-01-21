@@ -2,6 +2,9 @@
 
 namespace WSCT.GlobalPlatform.Security
 {
+    /// <summary>
+    /// Visa 2 key derivation algorithm.
+    /// </summary>
     internal class Visa2KeyDerivationAlgorithm : IKeyDerivationAlgorithm
     {
         public Keys Generate(byte[] baseKeyDiversificationData, byte[] masterKey)
