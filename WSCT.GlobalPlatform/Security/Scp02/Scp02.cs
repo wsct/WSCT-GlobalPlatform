@@ -16,7 +16,7 @@ namespace WSCT.GlobalPlatform.Security.Scp02
             var cardCryptogram = Scp02Algorithms
                 .GenerateCardCryptogram(scpData.SessionKeys.Enc, scpData.CardChallenge, scpData.HostChallenge);
 
-            var cardAuthenticationResult = cardCryptogram.SequenceEqual(cardCryptogram);
+            var cardAuthenticationResult = cardCryptogram.SequenceEqual(scpData.CardCryptogram);
 
             var hostCryptogram = Scp02Algorithms
                 .GenerateHostCryptogram(scpData.SessionKeys.Enc, scpData.CardChallenge, scpData.HostChallenge);
