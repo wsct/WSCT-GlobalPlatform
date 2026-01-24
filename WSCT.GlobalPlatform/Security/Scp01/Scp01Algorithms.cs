@@ -81,7 +81,7 @@ namespace WSCT.GlobalPlatform.Security.Scp01
             var dek = new byte[16];
             dek.AsSpan().CopyTo(keys.Dek);
 
-            return new SessionKeys(mac, Array.Empty<byte>(), enc, dek);
+            return new SessionKeys(mac, [], enc, dek);
         }
 
         private static byte[] GenerateSessionKey(byte[] key, byte[] cardChallenge, byte[] hostChallenge)
@@ -97,7 +97,7 @@ namespace WSCT.GlobalPlatform.Security.Scp01
             var derivationData = new byte[16];
             var span = derivationData.AsSpan();
 
-            cardChallenge[4..8].CopyTo(span);
+            cardChallenge[4..8].CopyTo(span[0..4]);
             hostChallenge[0..4].CopyTo(span[4..8]);
             cardChallenge[0..4].CopyTo(span[8..12]);
             hostChallenge[4..8].CopyTo(span[12..16]);

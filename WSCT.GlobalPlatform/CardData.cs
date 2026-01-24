@@ -3,18 +3,53 @@ using WSCT.Helpers.BasicEncodingRules;
 
 namespace WSCT.GlobalPlatform
 {
+    /// <summary>
+    /// Card data as returned by the <see cref="GlobalPlatformCard.ProcessGetCardData"/> command.
+    /// </summary>
     public class CardData
     {
+        /// <summary>
+        /// Global Platform ver sion.
+        /// </summary>
         public byte[]? GlobalPlatformVersion { get; private set; }
-        public IList<SecureChannelProtocolDetails> SupportedScps { get; private set; } = Array.Empty<SecureChannelProtocolDetails>();
+
+        /// <summary>
+        /// Supported SCPs.
+        /// </summary>
+        public IList<SecureChannelProtocolDetails> SupportedScps { get; private set; } = [];
+
+        /// <summary>
+        /// Card identification scheme.
+        /// </summary>
         public byte[]? CardIdentificationScheme { get; private set; }
+
+        /// <summary>
+        /// Card configuration details.
+        /// </summary>
         public byte[]? CardConfigurationDetails { get; private set; }
+
+        /// <summary>
+        /// Card details.
+        /// </summary>
         public byte[]? CardDetails { get; private set; }
+
+        /// <summary>
+        /// Application tag 7.
+        /// </summary>
         public byte[]? ApplicationTag7 { get; private set; }
+
+        /// <summary>
+        /// Application tag 8.
+        /// </summary>
         public byte[]? ApplicationTag8 { get; private set; }
 
         #region >> Static Methods
 
+        /// <summary>
+        /// Creates a <see cref="CardData"/> instance from the card data bytes.
+        /// </summary>
+        /// <param name="cardDataBytes">Card data bytes.</param>
+        /// <returns>A <see cref="CardData"/> instance.</returns>
         public static CardData Create(byte[] cardDataBytes)
         {
             return new CardData().Parse(cardDataBytes);
@@ -45,7 +80,7 @@ namespace WSCT.GlobalPlatform
                 .GetTag((uint)CardDataTag.ApplicationTag3)
                 ?? throw new GlobalPlatformException("Application tag 3 is missing");
 
-            CardIdentificationScheme = applicationTag3.GetTag(0x06).Value.AsSpan().ToArray();
+            CardIdentificationScheme = [.. applicationTag3.GetTag(0x06).Value];
 
             var applicationTag4 = tlvCardData73
                 .GetTag((uint)CardDataTag.ApplicationTag4)
@@ -59,22 +94,22 @@ namespace WSCT.GlobalPlatform
             CardConfigurationDetails = tlvCardData73
                 .GetTag((uint)CardDataTag.ApplicationTag5)
                 ?.Value
-                ?? Array.Empty<byte>();
+                ?? [];
 
             CardDetails = tlvCardData73
                 .GetTag((uint)CardDataTag.ApplicationTag6)
                 ?.Value
-                ?? Array.Empty<byte>();
+                ?? [];
 
             ApplicationTag7 = tlvCardData73
                 .GetTag((uint)CardDataTag.ApplicationTag7)
                 ?.Value
-                ?? Array.Empty<byte>();
+                ?? [];
 
             ApplicationTag8 = tlvCardData73
                 .GetTag((uint)CardDataTag.ApplicationTag8)
                 ?.Value
-                ?? Array.Empty<byte>();
+                ?? [];
 
             return this;
         }

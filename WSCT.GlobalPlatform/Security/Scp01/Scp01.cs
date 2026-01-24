@@ -6,40 +6,62 @@ namespace WSCT.GlobalPlatform.Security.Scp01
 {
     internal class Scp01 : ISecureChannelProtocol
     {
+        /// <summary>
+        /// Instance shared with the <see cref="GlobalPlatformCard"/> instance.
+        /// </summary>
+        private readonly SecureChannelData _scpData;
+
         public Scp01(SecureChannelData scpData)
         {
-            scpData.Specifics = new Scp01Specifics(scpData.ScpDetails.Options);
+            GlobalPlatformException.ThrowIfNull(scpData);
+
+            _scpData = scpData;
+            _scpData.Specifics = new Scp01Specifics(_scpData.ScpDetails.Options);
         }
 
-        public bool AuthenticateCard(SecureChannelData scpData)
+        /// <inheritdoc />
+        public bool AuthenticateCard()
         {
-            var cardCryptogram = Scp01Algorithms
-                .GenerateCardCryptogram(scpData.SessionKeys.Enc, scpData.CardChallenge, scpData.HostChallenge);
+            GlobalPlatformException.ThrowIfNull(_scpData.SessionKeys);
+            GlobalPlatformException.ThrowIfNull(_scpData.CardChallenge, "Card challenge missing: Call ProcessInitializeUpdate(...) first");
+            GlobalPlatformException.ThrowIfNull(_scpData.HostChallenge, "Host challenge missing: Call ProcessInitializeUpdate(...) first");
+            GlobalPlatformException.ThrowIfNull(_scpData.CardCryptogram, "Card cryptogram missing: Call ProcessInitializeUpdate(...) first");
 
-            var cardAuthenticationResult = cardCryptogram.SequenceEqual(scpData.CardCryptogram);
+            var cardCryptogram = Scp01Algorithms
+                .GenerateCardCryptogram(_scpData.SessionKeys.Enc, _scpData.CardChallenge, _scpData.HostChallenge);
+
+            var cardAuthenticationResult = cardCryptogram.SequenceEqual(_scpData.CardCryptogram);
 
             var hostCryptogram = Scp01Algorithms
-                .GenerateHostCryptogram(scpData.SessionKeys.Enc, scpData.CardChallenge, scpData.HostChallenge);
+                .GenerateHostCryptogram(_scpData.SessionKeys.Enc, _scpData.CardChallenge, _scpData.HostChallenge);
 
-            scpData.ParseHostCryptogram(hostCryptogram);
+            _scpData.ParseHostCryptogram(hostCryptogram);
 
             return cardAuthenticationResult;
         }
 
-        public SessionKeys GenerateSessionKeys(SecureChannelData scpData)
+        /// <inheritdoc />
+        public SessionKeys GenerateSessionKeys()
         {
-            var scpSpecifics = (Scp01Specifics)scpData.Specifics;
+            GlobalPlatformException.ThrowIfNull(_scpData.Specifics);
+
+            var scpSpecifics = (Scp01Specifics)_scpData.Specifics;
+
+            GlobalPlatformException.ThrowIfNull(_scpData.Keys);
+            GlobalPlatformException.ThrowIfNull(_scpData.CardChallenge, "Card challenge missing: Call ProcessInitializeUpdate(...) first");
+            GlobalPlatformException.ThrowIfNull(_scpData.HostChallenge, "Host challenge missing: Call ProcessInitializeUpdate(...) first");
 
             if (scpSpecifics.SubIdentifier.UseThreeKeys)
             {
                 return Scp01Algorithms
-                    .GenerateSessionKeys(scpData.Keys, scpData.CardChallenge, scpData.HostChallenge);
+                    .GenerateSessionKeys(_scpData.Keys, _scpData.CardChallenge, _scpData.HostChallenge);
             }
 
             throw new NotImplementedException("Only 3 Secure Channel base keys is supported by SCP 01");
         }
 
-        public ExternalAuthenticateCommand Wrap(ExternalAuthenticateCommand cApdu, SecureChannelData scpData)
+        /// <inheritdoc />
+        public ExternalAuthenticateCommand Wrap(ExternalAuthenticateCommand cApdu)
         {
             /*
 			The Secure Channel mandates the use of a MAC on the EXTERNAL AUTHENTICATE command. Depending on
@@ -48,14 +70,18 @@ namespace WSCT.GlobalPlatform.Security.Scp01
 			*/
 
             /* For the EXTERNAL AUTHENTICATE command, the ICV is set to binary zeroes */
-            var scpSpecifics = (Scp01Specifics)scpData.Specifics;
+
+            GlobalPlatformException.ThrowIfNull(_scpData.Specifics);
+            GlobalPlatformException.ThrowIfNull(_scpData.SessionKeys);
+
+            var scpSpecifics = (Scp01Specifics)_scpData.Specifics;
             scpSpecifics.LastCMac = Constants.ICV;
 
             cApdu.Cla |= 0x04;
             cApdu.Lc += 8;
 
             var mac = Scp01Algorithms
-                .GenerateCMac(scpData.SessionKeys.CMac, scpSpecifics.LastCMac, cApdu.BinaryCommand);
+                .GenerateCMac(_scpData.SessionKeys.CMac, scpSpecifics.LastCMac, cApdu.BinaryCommand);
 
             scpSpecifics.LastCMac = mac;
 
@@ -68,30 +94,34 @@ namespace WSCT.GlobalPlatform.Security.Scp01
             return cApdu;
         }
 
-        public CommandAPDU Wrap(CommandAPDU cApdu, SecureChannelData scpData)
+        /// <inheritdoc />
+        public CommandAPDU Wrap(CommandAPDU cApdu)
         {
-            if ((scpData.SecurityLevel & SecurityLevel.CMac) != 0)
+            if ((_scpData.SecurityLevel & SecurityLevel.CMac) != 0)
             {
-                cApdu = WrapForCMac(cApdu, scpData);
+                cApdu = WrapForCMac(cApdu);
             }
 
-            if ((scpData.SecurityLevel & SecurityLevel.CDecryption) != 0)
+            if ((_scpData.SecurityLevel & SecurityLevel.CDecryption) != 0)
             {
-                cApdu = WrapForCDec(cApdu, scpData);
+                cApdu = WrapForCDec(cApdu);
             }
 
             return cApdu;
         }
 
-        private CommandAPDU WrapForCMac(CommandAPDU cApdu, SecureChannelData scpData)
+        private CommandAPDU WrapForCMac(CommandAPDU cApdu)
         {
-            var scpSpecifics = (Scp01Specifics)scpData.Specifics;
+            GlobalPlatformException.ThrowIfNull(_scpData.Specifics);
+            GlobalPlatformException.ThrowIfNull(_scpData.SessionKeys);
 
-            if ((scpData.SecurityLevel & SecurityLevel.CMac) != 0)
+            var scpSpecifics = (Scp01Specifics)_scpData.Specifics;
+
+            if ((_scpData.SecurityLevel & SecurityLevel.CMac) != 0)
             {
                 if (cApdu.HasLc is false)
                 {
-                    cApdu.Udc = Array.Empty<byte>();
+                    cApdu.Udc = [];
                 }
 
                 cApdu.Cla |= 0x04;
@@ -114,7 +144,7 @@ namespace WSCT.GlobalPlatform.Security.Scp01
                     // next C-MAC. The encryption mechanism used is triple DES with the C-MAC session key. The first ICV of a
                     // session, used to generate the C-MAC on the EXTERNAL AUTHENTICATE command, is not encrypted.
                     iv = scpSpecifics.LastCMac
-                       .EncryptTripleDesEcb(scpData.SessionKeys.CMac, scpSpecifics.LastCMac);
+                       .EncryptTripleDesEcb(_scpData.SessionKeys.CMac, scpSpecifics.LastCMac);
                 }
                 else
                 {
@@ -123,7 +153,7 @@ namespace WSCT.GlobalPlatform.Security.Scp01
 
                 // Calculate the C-APDU C-MAC
                 var mac = Scp01Algorithms
-                    .GenerateCMac(scpData.SessionKeys.CMac, iv, cApdu.BinaryCommand);
+                    .GenerateCMac(_scpData.SessionKeys.CMac, iv, cApdu.BinaryCommand);
 
                 scpSpecifics.LastCMac = mac;
 
@@ -144,9 +174,11 @@ namespace WSCT.GlobalPlatform.Security.Scp01
             return cApdu;
         }
 
-        private CommandAPDU WrapForCDec(CommandAPDU cApdu, SecureChannelData scpData)
+        private CommandAPDU WrapForCDec(CommandAPDU cApdu)
         {
-            if ((scpData.SecurityLevel & SecurityLevel.CDecryption) == 0)
+            GlobalPlatformException.ThrowIfNull(_scpData.SessionKeys);
+
+            if ((_scpData.SecurityLevel & SecurityLevel.CDecryption) == 0)
             {
                 return cApdu;
             }
@@ -157,7 +189,7 @@ namespace WSCT.GlobalPlatform.Security.Scp01
             }
 
             // Isolate UDC and CMAC
-            var macLength = (scpData.SecurityLevel & SecurityLevel.CMac) == 0 ? 0 : 8;
+            var macLength = (_scpData.SecurityLevel & SecurityLevel.CMac) == 0 ? 0 : 8;
             var originalLc = cApdu.Udc.Length - macLength;
 
             var originalUdc = cApdu.Udc.AsSpan(0, originalLc);
@@ -172,7 +204,7 @@ namespace WSCT.GlobalPlatform.Security.Scp01
             // Encrypt the padded clear text data
             var encryptedData = originalLcUdc
                 .PadDataForDes()
-                .EncryptTripleDesCbc(scpData.SessionKeys.Enc, Constants.ICV);
+                .EncryptTripleDesCbc(_scpData.SessionKeys.Enc, Constants.ICV);
 
             // Final APDU data = encrypted data | CMAC
             cApdu.Udc = new byte[encryptedData.Length + macLength];

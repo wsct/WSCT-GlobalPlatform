@@ -1,4 +1,6 @@
-﻿using WSCT.Helpers;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
+using WSCT.Helpers;
 
 namespace WSCT.GlobalPlatform.Security
 {
@@ -46,6 +48,13 @@ namespace WSCT.GlobalPlatform.Security
 
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SecureChannelData"/> class.
+        /// </summary>
+        /// <param name="scp">The SCP details</param>
+        /// <param name="keyVersion">Key version</param>
+        /// <param name="keyIdentifier">Key identifier</param>
+        /// <param name="hostChallenge">Host challenge</param>
         public SecureChannelData(SecureChannelProtocolDetails scp, byte keyVersion, byte keyIdentifier, Span<byte> hostChallenge)
         {
             ScpDetails = scp;
@@ -63,6 +72,11 @@ namespace WSCT.GlobalPlatform.Security
 
         public SecureChannelData ParseInitializeUpdateResponse(Span<byte> udr)
         {
+            if (udr.Length != 28)
+            {
+                throw new GlobalPlatformException($"Something went wrong during the Initialize Update: Invalid UDR length (expected 28 bytes, got {udr.Length})");
+            }
+
             KeyDiversificationData = udr[..10].ToArray();
             KeyInformation = udr[10..12].ToArray();
             CardChallenge = udr[12..20].ToArray();

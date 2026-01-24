@@ -1,13 +1,8 @@
 ﻿namespace WSCT.GlobalPlatform.Security.Scp01
 {
-    public class Scp01SubIdentifier
+    public class Scp01SubIdentifier(byte subIdentifier)
     {
-        private readonly byte _subIdentifier;
-
-        public Scp01SubIdentifier(byte subIdentifier)
-        {
-            _subIdentifier = subIdentifier;
-        }
+        private readonly byte _subIdentifier = subIdentifier;
 
         // TODO Externalize in Scp01 (factory?)
         /// <summary>"3 Secure Channel Keys" or "1 Secure Channel base key"</summary>

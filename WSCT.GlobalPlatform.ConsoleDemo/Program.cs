@@ -59,7 +59,7 @@ try
     var gpCard = new GlobalPlatformCard(cardChannel);
 
     gpCard
-        .ProcessSelectCardManager("A0 00 00 01 51 00".FromHexa())
+        .ProcessSelectCardManager()
         .ThrowIfNotSuccess()
         .ThrowIfSWNot9000();
 
@@ -98,7 +98,7 @@ try
 
     // GET STATUS command
     gpCard
-        .ProcessCommand(new CommandAPDU(0x80, 0xF2, 0x40, 0x00, 0x02, new byte[] { 0x4F, 0x00 }, 0x00));
+        .ProcessCommand(new CommandAPDU(0x80, 0xF2, 0x40, 0x00, 0x02, [0x4F, 0x00], 0x00));
 
     // GET DATA Key Information Template
     gpCard

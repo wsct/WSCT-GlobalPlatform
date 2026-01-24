@@ -11,31 +11,27 @@ namespace WSCT.GlobalPlatform.Security
         /// <summary>
         /// Executes the card authentication.
         /// </summary>
-        /// <param name="scpData"></param>
         /// <returns></returns>
-        bool AuthenticateCard(SecureChannelData scpData);
+        bool AuthenticateCard();
 
         /// <summary>
         /// Generates the session keys.
         /// </summary>
-        /// <param name="scpData"></param>
         /// <returns></returns>
-        SessionKeys GenerateSessionKeys(SecureChannelData scpData);
+        SessionKeys GenerateSessionKeys();
 
         /// <summary>
         /// Wraps the external authenticate command.
         /// </summary>
         /// <param name="externalAuthenticate"></param>
-        /// <param name="scpData"></param>
         /// <returns></returns>
-        ExternalAuthenticateCommand Wrap(ExternalAuthenticateCommand externalAuthenticate, SecureChannelData scpData);
+        ExternalAuthenticateCommand Wrap(ExternalAuthenticateCommand externalAuthenticate);
 
         /// <summary>
         /// Wraps the command APDU.
         /// </summary>
         /// <param name="cApdu"></param>
-        /// <param name="scpData"></param>
         /// <returns></returns>
-        CommandAPDU Wrap(CommandAPDU cApdu, SecureChannelData scpData);
+        CommandAPDU Wrap(CommandAPDU cApdu);
     }
 }
