@@ -1,6 +1,6 @@
 # WSCT GlobalPlatform
 
-Public repository for WSCT GlobalPlatform project.
+Public repository for WSCT GlobalPlatform project [![NuGet](https://img.shields.io/nuget/v/WSCT.GlobalPlatform.svg)](https://www.nuget.org/packages/WSCT.GlobalPlatform/).
 
 ## Features
 
@@ -31,12 +31,12 @@ The current status of this project is *work in progress*.
   - [ ] RMAC
   - [x] CDEC
 
-## Some example of usage
+## Some examples of usage
 
-### Secure Channel Establishment
+### Establish a secure channel
 
 ```csharp
-// Define GlobalPlatform card keys
+// Define card keys
 var SEnc = "40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F".FromHexa();
 var SMac = "40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F".FromHexa();
 var Dek = "40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F".FromHexa();
