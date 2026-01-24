@@ -3,6 +3,9 @@ using WSCT.Helpers.BasicEncodingRules;
 
 namespace WSCT.GlobalPlatform.JavaCard
 {
+    /// <summary>
+    /// Helper class to parse a CAP file.
+    /// </summary>
     public class CapFile
     {
         private readonly ZipArchive _capFile;

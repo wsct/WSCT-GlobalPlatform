@@ -26,7 +26,7 @@ namespace WSCT.GlobalPlatform.Commands
             var tlvData = new TlvData();
             tlvData.InnerTlvs.Add(new TlvData(0x4F, (uint)aid.Length, aid.ToArray()));
 
-            var tlvSignature = new TlvData(0xB6, 0x00, Array.Empty<byte>());
+            var tlvSignature = new TlvData(0xB6, 0x00, []);
 
             AddWhenNotEmpty(tlvSignature, 0x42, tokenIssuerId);
             AddWhenNotEmpty(tlvSignature, 0x45, cardImageNumber);

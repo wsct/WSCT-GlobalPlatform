@@ -2,6 +2,12 @@
 
 namespace WSCT.GlobalPlatform.Commands
 {
+    /// <summary>
+    /// The LOAD command is used to load data into the card.
+    /// </summary>
+    /// <remarks>
+    /// The LOAD command must be preceded by an INSTALL [for load] command.
+    /// </remarks>
     public class LoadCommand : CommandAPDU
     {
         public LoadCommand(bool lastBlock, byte blockNumber, byte[] loadData)

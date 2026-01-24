@@ -2,6 +2,14 @@
 
 namespace WSCT.GlobalPlatform.Commands
 {
+    /// <summary>
+    /// The INSTALL [for install and make selectable] command is used to install an application on the card and 
+    /// make it selectable.
+    /// </summary>
+    /// <remarks>
+    /// The INSTALL command is issued to a Security Domain to initiate or perform the various steps required for 
+    /// Card Content management.
+    /// </remarks>
     public class InstallForInstallAndMakeSelectableCommand : CommandAPDU
     {
         // new CommandAPDU(0x84, 0xE6, 0x02, 0x00, Lc, UDC, 0x00)

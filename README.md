@@ -31,7 +31,9 @@ The current status of this project is *work in progress*.
   - [ ] RMAC
   - [x] CDEC
 
-## Code sample
+## Some example of usage
+
+### Secure Channel Establishment
 
 ```csharp
 // Define GlobalPlatform card keys
@@ -58,7 +60,7 @@ try
     Console.WriteLine(gpCard.CardData);
 
     // Do SCP02 Mutual Authentication
-    var scpUsed = gpCard.CardData.SupportedScps.First(scp => scp.Identifier == 0x01 || scp.Identifier == 0x02);
+    var scpUsed = gpCard.CardData.SupportedScps.First(scp => scp.Identifier == 0x02);
 
     gpCard
         .ProcessInitializeUpdate(scpUsed, keyVersion, KeyIdentifier, hostChallenge);
@@ -98,4 +100,45 @@ finally
     cardContext
         .Release();
 }
+```
+
+### INSTALL [for load]
+
+Once the secure channel is established, a new application on the card can be loaded on the card.
+
+```csharp
+var loadFileAid = "F04341454E42".FromHexa();
+byte[] securityDomainAid = [];
+byte[] loadFileDataBlockHash = [];
+byte[] loadParameters = [];
+byte[] loadToken = [];
+
+gpCard
+	.ProcessInstallForLoad(loadFileAid, securityDomainAid, loadFileDataBlockHash, loadParameters, loadToken);
+
+var pathToCapFile = @"path/to/cap/file/applet.cap";
+
+gpCard
+	.ProcessLoad(pathToCapFile);
+```
+
+### INSTALL [for install and make selectable]
+
+```csharp
+var moduleAid = "F04341454E42 01".FromHexa();
+var applicationAid = "F04341454E42 01".FromHexa();
+var privileges = "00".FromHexa();
+var installParameters = "C9 00".FromHexa();
+byte[] installToken = [];
+
+gpCard
+	.ProcessInstallForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, installParameters, installToken);
+```
+### DELETE
+
+```csharp
+var aid = "F04341454E42".FromHexa();
+
+gpCard
+	.ProcessDelete(aid);
 ```

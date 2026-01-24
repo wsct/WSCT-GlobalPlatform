@@ -2,6 +2,10 @@
 
 namespace WSCT.GlobalPlatform.Commands
 {
+    /// <summary>
+    /// The INITIALIZE UPDATE command is used, during explicit initiation of a Secure Channel, to transmit card and
+    /// session data between the card and the host. This command initiates the initiation of a Secure Channel Session.
+    /// </summary>
     public class InitializeUpdateCommand : CommandAPDU
     {
         // 80 50 <KeyVersion> <KeyIndex> 08 <HostChallenge> 00

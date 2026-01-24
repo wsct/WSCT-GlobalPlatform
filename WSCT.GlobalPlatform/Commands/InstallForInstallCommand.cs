@@ -2,6 +2,13 @@
 
 namespace WSCT.GlobalPlatform.Commands
 {
+    /// <summary>
+    /// The INSTALL [for install] command is used to install an application on the card.
+    /// </summary>
+    /// <remarks>
+    /// The INSTALL command is issued to a Security Domain to initiate or perform the various steps required for 
+    /// Card Content management.
+    /// </remarks>
     public class InstallForInstallCommand : CommandAPDU
     {
         public InstallForInstallCommand(byte[] parameters)
