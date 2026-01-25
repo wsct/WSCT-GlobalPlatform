@@ -26,5 +26,15 @@ namespace WSCT.GlobalPlatform
 
             return new AID(data.Slice(1, data[0]).ToArray());
         }
+
+        #region >>> Object
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return Aid.ToHexa();
+        }
+
+        #endregion
     }
 }

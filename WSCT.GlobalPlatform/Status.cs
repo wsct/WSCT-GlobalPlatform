@@ -5,7 +5,7 @@ namespace WSCT.GlobalPlatform
     /// <summary>
     /// Status of a card.
     /// </summary>
-    public record Status(AID Aid, byte LifeCycleState, byte[] Privileges, AID LoadFileAid, byte[] LoadFileVersion, AID[] moduleAids, AID SecurityDomain)
+    public record Status(AID Aid, byte LifeCycleState, byte[] Privileges, AID LoadFileAid, byte[] LoadFileVersion, AID[] ModuleAids, AID SecurityDomainAid)
     {
         /// <summary>
         /// Parse the status from the response data sent by the card.
@@ -31,7 +31,7 @@ namespace WSCT.GlobalPlatform
         {
             var parsedData = new List<Status>();
 
-            var readBytes = 0;
+            int readBytes;
             for (var span = data; span.Length > 0; span = span[readBytes..])
             {
                 var tlvE3 = new TlvData();
@@ -77,7 +77,7 @@ namespace WSCT.GlobalPlatform
                 }
             }
 
-            var securityDomainAid = tlv.HasTag(0xCC, true) ? new AID(tlv.GetTag(0xCC, true).Value) : new AID([]);
+            var securityDomainAid = tlv.HasTag(0xCC) ? new AID(tlv.GetTag(0xCC).Value) : new AID([]);
 
             return new Status(aid, lifeCycle, privileges, loadFileAid, loadFileVersion, [.. moduleAids], securityDomainAid);
         }
