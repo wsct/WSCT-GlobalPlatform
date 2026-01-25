@@ -2,19 +2,17 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 
 using WSCT.Core;
+using WSCT.GlobalPlatform.CommandLine.Services;
 using WSCT.Wrapper;
 using WSCT.Wrapper.Desktop.Core;
 
 namespace WSCT.GlobalPlatform.CommandLine.Commands;
 
-public class ListReadersCommand : Command
+public class ListReadersCommand(IWSCTService wsctService) : Command
 {
     public override int Execute(CommandContext context)
     {
-        var cardContext = new CardContextObservable(new CardContext());
-
-        var establishResult = cardContext
-            .Establish();
+        var establishResult = wsctService.Establish();
 
         if (establishResult != ErrorCode.Success)
         {
@@ -22,21 +20,11 @@ public class ListReadersCommand : Command
             return 1;
         }
 
-        var listReaderGroupsResult = cardContext
-            .ListReaderGroups();
+        var readers = wsctService.GetReaders();
 
-        if (listReaderGroupsResult != ErrorCode.Success)
+        if (readers.Length == 0)
         {
-            AnsiConsole.MarkupLine($"[red]List reader groups failed: {listReaderGroupsResult}[/]");
-            return 1;
-        }
-
-        var listReadersResult = cardContext
-            .ListReaders(cardContext.Groups[0]);
-
-        if (listReadersResult != ErrorCode.Success)
-        {
-            AnsiConsole.MarkupLine($"[red]List readers failed: {listReadersResult}[/]");
+            AnsiConsole.MarkupLine("[red]No readers found[/]");
             return 1;
         }
 
@@ -46,7 +34,7 @@ public class ListReadersCommand : Command
             .AddColumn("Reader");
 
         var id = 1;
-        foreach (var reader in cardContext.Readers)
+        foreach (var reader in readers)
         {
             table.AddRow($"{id}", reader);
             id++;
