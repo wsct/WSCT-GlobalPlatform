@@ -1,16 +1,14 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
-
-using WSCT.Core;
 using WSCT.GlobalPlatform.CommandLine.Services;
 using WSCT.Wrapper;
-using WSCT.Wrapper.Desktop.Core;
 
 namespace WSCT.GlobalPlatform.CommandLine.Commands;
 
-public class ListReadersCommand(IWSCTService wsctService) : Command
+public class ListReadersCommand(IWSCTService wsctService)
+    : Command
 {
-    public override int Execute(CommandContext context)
+    public override int Execute(CommandContext context, CancellationToken cancellationToken)
     {
         var establishResult = wsctService.Establish();
 
@@ -41,6 +39,8 @@ public class ListReadersCommand(IWSCTService wsctService) : Command
         }
 
         AnsiConsole.Write(table);
+
+        wsctService.Release();
 
         return 0;
     }

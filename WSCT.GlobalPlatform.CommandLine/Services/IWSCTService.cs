@@ -1,9 +1,12 @@
+using WSCT.Core;
 using WSCT.Wrapper;
 
 namespace WSCT.GlobalPlatform.CommandLine.Services;
 
 public interface IWSCTService
 {
+    ICardChannelObservable? CardChannel { get; }
+
     ErrorCode Connect(string readerName);
 
     ErrorCode Disconnect();
@@ -13,12 +16,4 @@ public interface IWSCTService
     string[] GetReaders();
 
     ErrorCode Release();
-
-    ErrorCode SelectCardManager();
-
-    ErrorCode GetCardData();
-
-    ErrorCode Authenticate(byte[] sEnc, byte[] sMac, byte[] dek, byte keyVersion, byte keyIdentifier);
-
-    Status[] GetApplications();
 }

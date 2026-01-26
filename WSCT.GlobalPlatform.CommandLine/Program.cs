@@ -11,14 +11,19 @@ public class Program
     public static int Main(string[] args)
     {
         var services = new ServiceCollection();
+
         services.AddSingleton<IWSCTService, WSCTService>();
+        services.AddSingleton<IGlobalPlatformService, GlobalPlatformService>();
+        services.AddSingleton<IGlobalPlatformConsoleService, GlobalPlatformConsoleService>();
+
         services.AddLogging(configure => configure.AddSimpleConsole(options =>
         {
             options.SingleLine = true;
-            options.IncludeScopes = false;
+            options.IncludeScopes = true;
         }));
 
         var registrar = new TypeRegistrar(services);
+
         var app = new CommandApp(registrar);
         app.Configure(config =>
         {
@@ -26,6 +31,10 @@ public class Program
                 .WithDescription("Lists available readers");
             config.AddCommand<ListApplicationsCommand>("list-applications")
                 .WithDescription("Lists available applications on the card");
+            config.AddCommand<DeleteCommand>("delete")
+                .WithDescription("Deletes an application from the card");
+            config.AddCommand<InstallCommand>("install")
+                .WithDescription("Installs an application on the card");
         });
 
         return app.Run(args);
