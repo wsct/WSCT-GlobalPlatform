@@ -91,17 +91,17 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
         return getCardDataResult.ErrorCode;
     }
 
-    public ErrorCode InstallForLoad(byte[] loadFileAid, byte[] securityDomainAid, byte[] loadFileDataBlockHash, byte[] loadParameters, byte[] loadToken)
+    public bool InstallForLoad(byte[] loadFileAid, byte[] securityDomainAid, byte[] loadFileDataBlockHash, byte[] loadParameters, byte[] loadToken)
     {
         if (_gpCard is null)
         {
-            return ErrorCode.InvalidHandle;
+            return false;
         }
 
         var installForLoadResult = _gpCard
             .ProcessInstallForLoad(loadFileAid, securityDomainAid, loadFileDataBlockHash, loadParameters, loadToken);
 
-        return installForLoadResult.ErrorCode;
+        return installForLoadResult.ErrorCode == ErrorCode.Success && installForLoadResult.RApdu.StatusWord == 0x9000;
     }
 
     public ErrorCode Load(string pathToCapFile)

@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using WSCT.GlobalPlatform.CommandLine.Services;
@@ -7,33 +6,11 @@ using WSCT.Wrapper;
 
 namespace WSCT.GlobalPlatform.CommandLine.Commands
 {
+
     public class InstallCommand(IWSCTService wsctService, IGlobalPlatformService gpService, IGlobalPlatformConsoleService gpConsoleService)
-        : Command<InstallCommand.Settings>
+        : Command<InstallSettings>
     {
-        public class Settings : CommandSettings
-        {
-            [CommandOption(template: "--aid", isRequired: true)]
-            [Description("The AID of the application to install")]
-            public string Aid { get; init; } = string.Empty;
-
-            [CommandOption(template: "--cap", isRequired: true)]
-            [Description("The path to the .cap file to load")]
-            public string PathToCapFile { get; init; } = string.Empty;
-
-            [CommandOption(template: "--priv", isRequired: false)]
-            [Description("The privileges of the application")]
-            public string Privileges { get; init; } = "00";
-
-            [CommandOption(template: "--aid-exec", isRequired: true)]
-            [Description("The AID of the executable module")]
-            public string ExecutableAid { get; init; } = string.Empty;
-
-            [CommandOption(template: "--install-params")]
-            [Description("The install parameters")]
-            public string InstallParameters { get; init; } = "C9 00";
-        }
-
-        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
+        public override int Execute(CommandContext context, InstallSettings settings, CancellationToken cancellationToken)
         {
             try
             {
@@ -46,7 +23,7 @@ namespace WSCT.GlobalPlatform.CommandLine.Commands
 
                 AnsiConsole.MarkupLine($"Now working with [blue]{readerName}[/]");
 
-                var authenticated = gpConsoleService.AuthenticateCard(readerName);
+                var authenticated = gpConsoleService.AuthenticateCard(readerName, settings.SEnc.FromHexa(), settings.SMac.FromHexa(), settings.Dek.FromHexa(), settings.KeyVersion.FromHexa()[0], settings.KeyIdentifier.FromHexa()[0]);
 
                 if (!authenticated)
                 {
@@ -54,15 +31,6 @@ namespace WSCT.GlobalPlatform.CommandLine.Commands
                 }
 
                 AnsiConsole.MarkupLine($"[yellow]Install {settings.Aid} on card...[/]");
-                /*
-                                var deleteResult = gpService.DeleteApplication(settings.Aid.FromHexa());
-
-                                if (deleteResult != ErrorCode.Success)
-                                {
-                                    AnsiConsole.MarkupLineInterpolated($"[red]Failed to delete application: {deleteResult}[/]");
-                                    return 1;
-                                }
-                */
 
                 // INSTALL [for load] parameters
                 var loadFileAid = settings.Aid.FromHexa();
@@ -74,9 +42,9 @@ namespace WSCT.GlobalPlatform.CommandLine.Commands
                 // INSTALL [for load]
                 var installForLoadResult = gpService.InstallForLoad(loadFileAid, securityDomainAid, loadFileDataBlockHash, loadParameters, loadToken);
 
-                if (installForLoadResult != ErrorCode.Success)
+                if (!installForLoadResult)
                 {
-                    AnsiConsole.MarkupLineInterpolated($"[red]Failed to install for load: {installForLoadResult}[/]");
+                    AnsiConsole.MarkupLineInterpolated($"[red]Failed to INSTALL [[for load]][/]");
                     return 1;
                 }
 
@@ -85,7 +53,7 @@ namespace WSCT.GlobalPlatform.CommandLine.Commands
 
                 if (loadResult != ErrorCode.Success)
                 {
-                    AnsiConsole.MarkupLineInterpolated($"[red]Failed to load: {loadResult}[/]");
+                    AnsiConsole.MarkupLineInterpolated($"[red]Failed to LOAD: {loadResult}[/]");
                     return 1;
                 }
 

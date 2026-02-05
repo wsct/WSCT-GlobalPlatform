@@ -6,9 +6,9 @@ using WSCT.Helpers;
 namespace WSCT.GlobalPlatform.CommandLine.Commands;
 
 public class ListApplicationsCommand(IWSCTService wsctService, IGlobalPlatformService gpService, IGlobalPlatformConsoleService gpConsoleService)
-   : Command
+   : Command<AuthenticationSettings>
 {
-    public override int Execute(CommandContext context, CancellationToken cancellationToken)
+    public override int Execute(CommandContext context, AuthenticationSettings settings, CancellationToken cancellationToken)
     {
         try
         {
@@ -21,7 +21,7 @@ public class ListApplicationsCommand(IWSCTService wsctService, IGlobalPlatformSe
 
             AnsiConsole.MarkupLine($"Now working with [blue]{readerName}[/]");
 
-            var authenticated = gpConsoleService.AuthenticateCard(readerName);
+            var authenticated = gpConsoleService.AuthenticateCard(readerName, settings.SEnc.FromHexa(), settings.SMac.FromHexa(), settings.Dek.FromHexa(), settings.KeyVersion.FromHexa()[0], settings.KeyIdentifier.FromHexa()[0]);
 
             if (!authenticated)
             {

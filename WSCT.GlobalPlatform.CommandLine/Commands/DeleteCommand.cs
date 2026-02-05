@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using WSCT.GlobalPlatform.CommandLine.Services;
@@ -7,17 +6,10 @@ using WSCT.Wrapper;
 
 namespace WSCT.GlobalPlatform.CommandLine.Commands;
 
-public class DeleteCommand(IWSCTService wsctService, IGlobalPlatformService gpService, IGlobalPlatformConsoleService gpConsoleService)
-    : Command<DeleteCommand.Settings>
+public partial class DeleteCommand(IWSCTService wsctService, IGlobalPlatformService gpService, IGlobalPlatformConsoleService gpConsoleService)
+    : Command<DeleteSettings>
 {
-    public class Settings : CommandSettings
-    {
-        [CommandOption(template: "--aid", isRequired: true)]
-        [Description("The AID of the application to delete")]
-        public string Aid { get; init; } = string.Empty;
-    }
-
-    public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
+    public override int Execute(CommandContext context, DeleteSettings settings, CancellationToken cancellationToken)
     {
         try
         {
@@ -30,7 +22,24 @@ public class DeleteCommand(IWSCTService wsctService, IGlobalPlatformService gpSe
 
             AnsiConsole.MarkupLine($"Now working with [blue]{readerName}[/]");
 
-            var authenticated = gpConsoleService.AuthenticateCard(readerName);
+            byte[] sEnc, sMac, dek;
+            byte keyVersion, keyIdentifier;
+
+            try
+            {
+                sEnc = settings.SEnc.FromHexa();
+                sMac = settings.SMac.FromHexa();
+                dek = settings.Dek.FromHexa();
+                keyVersion = settings.KeyVersion.FromHexa()[0];
+                keyIdentifier = settings.KeyIdentifier.FromHexa()[0];
+            }
+            catch (Exception e)
+            {
+                AnsiConsole.MarkupLineInterpolated($"[red]Exception: {e.Message}[/]");
+                return 1;
+            }
+
+            var authenticated = gpConsoleService.AuthenticateCard(readerName, sEnc, sMac, dek, keyVersion, keyIdentifier);
 
             if (!authenticated)
             {

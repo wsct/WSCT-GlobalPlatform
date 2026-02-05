@@ -6,13 +6,7 @@ namespace WSCT.GlobalPlatform.CommandLine.Services;
 
 public class GlobalPlatformConsoleService(IWSCTService wsctService, IGlobalPlatformService gpService) : IGlobalPlatformConsoleService
 {
-    protected static readonly byte[] _defaultSEnc = "40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F".FromHexa();
-    protected static readonly byte[] _defaultSMac = "40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F".FromHexa();
-    protected static readonly byte[] _defaultDek = "40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F".FromHexa();
-    protected const byte _defaultKeyVersion = 0x00;
-    protected const byte _defaultKeyIdentifier = 0x00;
-
-    public bool AuthenticateCard(string readerName)
+    public bool AuthenticateCard(string readerName, byte[] sEnc, byte[] sMac, byte[] dek, byte keyVersion, byte keyIdentifier)
     {
         AnsiConsole.MarkupLine("[yellow]Connecting to card...[/]");
 
@@ -43,7 +37,7 @@ public class GlobalPlatformConsoleService(IWSCTService wsctService, IGlobalPlatf
 
         AnsiConsole.MarkupLine("[yellow]Authenticating...[/]");
 
-        var authenticateResult = gpService.Authenticate(_defaultSEnc, _defaultSMac, _defaultDek, _defaultKeyVersion, _defaultKeyIdentifier);
+        var authenticateResult = gpService.Authenticate(sEnc, sMac, dek, keyVersion, keyIdentifier);
         if (authenticateResult != ErrorCode.Success)
         {
             AnsiConsole.MarkupLine($"[red]Authenticate failed: {authenticateResult}[/]");

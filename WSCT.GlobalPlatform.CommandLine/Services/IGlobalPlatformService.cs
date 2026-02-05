@@ -12,7 +12,7 @@ public interface IGlobalPlatformService
 
     Status[] GetApplications();
 
-    ErrorCode InstallForLoad(byte[] loadFileAid, byte[] securityDomainAid, byte[] loadFileDataBlockHash, byte[] loadParameters, byte[] loadToken);
+    bool InstallForLoad(byte[] loadFileAid, byte[] securityDomainAid, byte[] loadFileDataBlockHash, byte[] loadParameters, byte[] loadToken);
 
     ErrorCode Load(string pathToCapFile);
 
