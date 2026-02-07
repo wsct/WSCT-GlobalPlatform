@@ -16,6 +16,14 @@ wsct-gp list-readers
 
 ## GlobalPlatform commands
 
+### Check the default card manager
+
+Allows to check the default card manager.
+
+```bash
+wsct-gp card-manager
+```
+
 ### List applications
 
 Allows to list applications installed on the card.

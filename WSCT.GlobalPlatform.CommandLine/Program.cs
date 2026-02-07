@@ -12,10 +12,12 @@ public class Program
     {
         var services = new ServiceCollection();
 
+        // Services
         services.AddSingleton<IWSCTService, WSCTService>();
         services.AddSingleton<IGlobalPlatformService, GlobalPlatformService>();
         services.AddSingleton<IGlobalPlatformConsoleService, GlobalPlatformConsoleService>();
 
+        // Logging
         services.AddLogging(configure => configure.AddSimpleConsole(options =>
         {
             options.SingleLine = true;
@@ -35,6 +37,8 @@ public class Program
                 .WithDescription("Deletes an application from the card");
             config.AddCommand<InstallCommand>("install")
                 .WithDescription("Installs an application on the card");
+            config.AddCommand<CardManagerCommand>("card-manager")
+                .WithDescription("Selects the card manager");
         });
 
         return app.Run(args);

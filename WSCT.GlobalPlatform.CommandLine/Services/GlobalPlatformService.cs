@@ -47,25 +47,19 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
         return ErrorCode.Success;
     }
 
-    public ErrorCode DeleteApplication(byte[] aid)
+    public bool DeleteApplication(byte[] aid)
     {
-        if (_gpCard is null)
-        {
-            return ErrorCode.InvalidHandle;
-        }
+        GlobalPlatformServiceException.ThrowIfNull(_gpCard);
 
         var deleteApplicationResult = _gpCard
             .ProcessDelete(aid);
 
-        return deleteApplicationResult.ErrorCode;
+        return deleteApplicationResult.ErrorCode == ErrorCode.Success && deleteApplicationResult.RApdu.StatusWord == 0x9000;
     }
 
     public Status[] GetApplications()
     {
-        if (_gpCard is null)
-        {
-            return [];
-        }
+        GlobalPlatformServiceException.ThrowIfNull(_gpCard);
 
         var crp = _gpCard
             .ProcessGetExecutableLoadFilesAndModulesStatusCommand([]);
@@ -78,25 +72,19 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
         return Status.Parse(crp.RApdu.Udr);
     }
 
-    public ErrorCode GetCardData()
+    public bool GetCardData()
     {
-        if (_gpCard is null)
-        {
-            return ErrorCode.InvalidHandle;
-        }
+        GlobalPlatformServiceException.ThrowIfNull(_gpCard);
 
         var getCardDataResult = _gpCard
             .ProcessGetCardData();
 
-        return getCardDataResult.ErrorCode;
+        return getCardDataResult.ErrorCode == ErrorCode.Success && getCardDataResult.RApdu.StatusWord == 0x9000;
     }
 
     public bool InstallForLoad(byte[] loadFileAid, byte[] securityDomainAid, byte[] loadFileDataBlockHash, byte[] loadParameters, byte[] loadToken)
     {
-        if (_gpCard is null)
-        {
-            return false;
-        }
+        GlobalPlatformServiceException.ThrowIfNull(_gpCard);
 
         var installForLoadResult = _gpCard
             .ProcessInstallForLoad(loadFileAid, securityDomainAid, loadFileDataBlockHash, loadParameters, loadToken);
@@ -106,10 +94,7 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
 
     public ErrorCode Load(string pathToCapFile)
     {
-        if (_gpCard is null)
-        {
-            return ErrorCode.InvalidHandle;
-        }
+        GlobalPlatformServiceException.ThrowIfNull(_gpCard);
 
         var loadResult = _gpCard
             .ProcessLoad(pathToCapFile);
@@ -119,10 +104,7 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
 
     public ErrorCode InstallForInstallAndMakeSelectable(byte[] loadFileAid, byte[] moduleAid, byte[] applicationAid, byte[] privileges, byte[] installParameters, byte[] installToken)
     {
-        if (_gpCard is null)
-        {
-            return ErrorCode.InvalidHandle;
-        }
+        GlobalPlatformServiceException.ThrowIfNull(_gpCard);
 
         var installForInstallAndMakeSelectableResult = _gpCard
             .ProcessInstallForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, installParameters, installToken);
@@ -130,28 +112,20 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
         return installForInstallAndMakeSelectableResult.ErrorCode;
     }
 
-    public ErrorCode SelectCardManager()
+    public bool SelectCardManager()
     {
         AttachToChannel();
 
-        if (_gpCard is null)
-        {
-            return ErrorCode.InvalidHandle;
-        }
+        GlobalPlatformServiceException.ThrowIfNull(_gpCard);
 
         var selectCardManagerResult = _gpCard
             .ProcessSelectCardManager();
 
-        return selectCardManagerResult.ErrorCode;
+        return selectCardManagerResult.ErrorCode == ErrorCode.Success && selectCardManagerResult.RApdu.StatusWord == 0x9000;
     }
 
     private void AttachToChannel()
     {
-        if (_gpCard is not null)
-        {
-            return;
-        }
-
         if (wsct.CardChannel is null)
         {
             logger.LogInformation("Card channel is not initialized");

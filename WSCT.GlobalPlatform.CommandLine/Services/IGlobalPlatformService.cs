@@ -6,9 +6,9 @@ public interface IGlobalPlatformService
 {
     ErrorCode Authenticate(byte[] sEnc, byte[] sMac, byte[] dek, byte keyVersion, byte keyIdentifier);
 
-    ErrorCode DeleteApplication(byte[] aid);
+    bool DeleteApplication(byte[] aid);
 
-    ErrorCode GetCardData();
+    bool GetCardData();
 
     Status[] GetApplications();
 
@@ -18,7 +18,7 @@ public interface IGlobalPlatformService
 
     ErrorCode InstallForInstallAndMakeSelectable(byte[] loadFileAid, byte[] moduleAid, byte[] applicationAid, byte[] privileges, byte[] installParameters, byte[] installToken);
 
-    ErrorCode SelectCardManager();
+    bool SelectCardManager();
 }
 
 
