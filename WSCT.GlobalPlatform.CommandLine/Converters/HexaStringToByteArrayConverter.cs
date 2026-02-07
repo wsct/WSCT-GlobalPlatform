@@ -5,9 +5,9 @@ using WSCT.Helpers;
 namespace WSCT.GlobalPlatform.CommandLine.Converters;
 
 /// <summary>
-/// Converts a string containing a 2 digits hexa value to a <c>byte</c>.
+/// Converts a string containing a sequence of hexa values to a <c>byte[]</c>.
 /// </summary>
-public class HexaStringToByteConverter : TypeConverter
+public class HexaStringToByteArrayConverter : TypeConverter
 {
     /// <inheritdoc/>
     public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
@@ -18,7 +18,7 @@ public class HexaStringToByteConverter : TypeConverter
     {
         if (value is string str)
         {
-            return str.FromHexa()[0];
+            return str.FromHexa();
         }
 
         return base.ConvertFrom(context, culture, value);
