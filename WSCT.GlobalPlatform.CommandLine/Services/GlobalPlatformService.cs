@@ -11,6 +11,7 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
 {
     private GlobalPlatformCard? _gpCard;
 
+    /// <inheritdoc/>
     public ErrorCode Authenticate(byte[] sEnc, byte[] sMac, byte[] dek, byte keyVersion, byte keyIdentifier)
     {
         if (_gpCard is null)
@@ -47,6 +48,7 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
         return ErrorCode.Success;
     }
 
+    /// <inheritdoc/>
     public bool DeleteApplication(byte[] aid)
     {
         GlobalPlatformServiceException.ThrowIfNull(_gpCard);
@@ -57,6 +59,7 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
         return deleteApplicationResult.ErrorCode == ErrorCode.Success && deleteApplicationResult.RApdu.StatusWord == 0x9000;
     }
 
+    /// <inheritdoc/>
     public Status[] GetApplications()
     {
         GlobalPlatformServiceException.ThrowIfNull(_gpCard);
@@ -72,6 +75,7 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
         return Status.Parse(crp.RApdu.Udr);
     }
 
+    /// <inheritdoc/>
     public bool GetCardData()
     {
         GlobalPlatformServiceException.ThrowIfNull(_gpCard);
@@ -82,6 +86,7 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
         return getCardDataResult.ErrorCode == ErrorCode.Success && getCardDataResult.RApdu.StatusWord == 0x9000;
     }
 
+    /// <inheritdoc/>
     public bool InstallForLoad(byte[] loadFileAid, byte[] securityDomainAid, byte[] loadFileDataBlockHash, byte[] loadParameters, byte[] loadToken)
     {
         GlobalPlatformServiceException.ThrowIfNull(_gpCard);
@@ -92,26 +97,29 @@ public class GlobalPlatformService(ILogger<GlobalPlatformService> logger, IWSCTS
         return installForLoadResult.ErrorCode == ErrorCode.Success && installForLoadResult.RApdu.StatusWord == 0x9000;
     }
 
-    public ErrorCode Load(string pathToCapFile)
+    /// <inheritdoc/>
+    public bool Load(string pathToCapFile)
     {
         GlobalPlatformServiceException.ThrowIfNull(_gpCard);
 
         var loadResult = _gpCard
             .ProcessLoad(pathToCapFile);
 
-        return loadResult.ErrorCode;
+        return loadResult.ErrorCode == ErrorCode.Success && loadResult.RApdu.StatusWord == 0x9000;
     }
 
-    public ErrorCode InstallForInstallAndMakeSelectable(byte[] loadFileAid, byte[] moduleAid, byte[] applicationAid, byte[] privileges, byte[] installParameters, byte[] installToken)
+    /// <inheritdoc/>
+    public bool InstallForInstallAndMakeSelectable(byte[] loadFileAid, byte[] moduleAid, byte[] applicationAid, byte[] privileges, byte[] installParameters, byte[] installToken)
     {
         GlobalPlatformServiceException.ThrowIfNull(_gpCard);
 
         var installForInstallAndMakeSelectableResult = _gpCard
             .ProcessInstallForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, installParameters, installToken);
 
-        return installForInstallAndMakeSelectableResult.ErrorCode;
+        return installForInstallAndMakeSelectableResult.ErrorCode == ErrorCode.Success && installForInstallAndMakeSelectableResult.RApdu.StatusWord == 0x9000;
     }
 
+    /// <inheritdoc/>
     public bool SelectCardManager()
     {
         AttachToChannel();

@@ -162,9 +162,9 @@ public class GlobalPlatformConsoleService(IWSCTService wsctService, IGlobalPlatf
             // LOAD
             var loadResult = gpService.Load(pathToCapFile);
 
-            if (loadResult != ErrorCode.Success)
+            if (!loadResult)
             {
-                AnsiConsole.MarkupLineInterpolated($"[red]Failed to LOAD: {loadResult}[/]");
+                AnsiConsole.MarkupLineInterpolated($"[red]Failed to LOAD[/]");
                 return false;
             }
 
@@ -174,9 +174,9 @@ public class GlobalPlatformConsoleService(IWSCTService wsctService, IGlobalPlatf
             // INSTALL [for install and make selectable]
             var installForInstallAndMakeSelectableResult = gpService.InstallForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, installParameters, installToken);
 
-            if (installForInstallAndMakeSelectableResult != ErrorCode.Success)
+            if (!installForInstallAndMakeSelectableResult)
             {
-                AnsiConsole.MarkupLineInterpolated($"[red]Failed to INSTALL [[for install and make selectable]]: {installForInstallAndMakeSelectableResult}[/]");
+                AnsiConsole.MarkupLineInterpolated($"[red]Failed to INSTALL [[for install and make selectable]][/]");
                 return false;
             }
 

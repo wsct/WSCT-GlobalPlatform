@@ -1,7 +1,5 @@
-using Spectre.Console;
 using Spectre.Console.Cli;
 using WSCT.GlobalPlatform.CommandLine.Services;
-using WSCT.Wrapper;
 
 namespace WSCT.GlobalPlatform.CommandLine.Commands;
 

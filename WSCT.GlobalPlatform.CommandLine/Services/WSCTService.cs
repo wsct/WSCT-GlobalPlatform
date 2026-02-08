@@ -1,12 +1,5 @@
-using System;
-using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
-using Spectre.Console;
 using WSCT.Core;
-using WSCT.Core.Fluent.Helpers;
-using WSCT.GlobalPlatform;
-using WSCT.GlobalPlatform.Commands;
-using WSCT.GlobalPlatform.Security;
 using WSCT.Linq;
 using WSCT.Wrapper;
 using WSCT.Wrapper.Desktop.Core;
