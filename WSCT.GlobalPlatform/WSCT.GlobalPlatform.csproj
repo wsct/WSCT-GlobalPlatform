@@ -4,9 +4,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<VersionPrefix>1.1.0</VersionPrefix>
-	<VersionSuffix></VersionSuffix>
-	<PackageProjectUrl>https://github.com/wsct/WSCT-GlobalPlatform</PackageProjectUrl>
+	  <VersionPrefix>1.2.0</VersionPrefix>
+	  <VersionSuffix></VersionSuffix>
+	  <PackageProjectUrl>https://github.com/wsct/WSCT-GlobalPlatform</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>wsct;smartcard;globalplatform</PackageTags>
     <RepositoryUrl>https://github.com/wsct/WSCT-GlobalPlatform</RepositoryUrl>
