@@ -1,27 +1,26 @@
 ﻿using WSCT.Helpers;
 
-namespace WSCT.GlobalPlatform.Security
+namespace WSCT.GlobalPlatform.Security;
+
+/// <summary>
+/// The secret keys used for establishing a secure channel protocol.
+/// </summary>
+public record Keys(
+    /// <summary>The static Encryption key</summary>
+    byte[] Enc,
+    /// <summary>The static Message Authentication Code key</summary>
+    byte[] Mac,
+    /// <summary>The static Data Encryption Key</summary>
+    byte[] Dek
+)
 {
-    /// <summary>
-    /// The secret keys used for establishing a secure channel protocol.
-    /// </summary>
-    public record Keys(
-        /// <summary>The static Encryption key</summary>
-        byte[] Enc,
-        /// <summary>The static Message Authentication Code key</summary>
-        byte[] Mac,
-        /// <summary>The static Data Encryption Key</summary>
-        byte[] Dek
-    )
+    #region >> Object
+
+    /// <inheritdoc />
+    public override string ToString()
     {
-        #region >> Object
-
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return $"Enc:{Enc.ToHexa()}, Mac:{Mac.ToHexa()}, Dek:{Dek.ToHexa()}";
-        }
-
-        #endregion
+        return $"Enc:{Enc.ToHexa()}, Mac:{Mac.ToHexa()}, Dek:{Dek.ToHexa()}";
     }
+
+    #endregion
 }

@@ -142,3 +142,11 @@ var aid = "F04341454E42".FromHexa();
 gpCard
 	.ProcessDelete(aid);
 ```
+
+## `wsct-gp` command line tool
+
+See [wsct-gp](WSCT.GlobalPlatform.CommandLine/README.md) for more information.
+
+```bash
+wsct-gp --list-applications
+```
