@@ -197,7 +197,7 @@ public class GlobalPlatformCard(ICardChannel cardChannel)
     public CommandResponsePair ProcessInstallForInstallAndMakeSelectable(Span<byte> loadFileAid, Span<byte> moduleAid, Span<byte> applicationAid, Span<byte> privileges, Span<byte> installParameters, Span<byte> installToken)
         => ProcessCommand(new InstallForInstallAndMakeSelectableCommand(loadFileAid, moduleAid, applicationAid, privileges, installParameters, installToken));
 
-    public CommandResponsePair ProcessInstallForLoad(byte[] loadFileAid, byte[] securityDomainAid, byte[] loadFileDataBlockHash, byte[] loadParameters, byte[] loadToken)
+    public CommandResponsePair ProcessInstallForLoad(Span<byte> loadFileAid, Span<byte> securityDomainAid, Span<byte> loadFileDataBlockHash, Span<byte> loadParameters, Span<byte> loadToken)
         => ProcessCommand(new InstallForLoadCommand(loadFileAid, securityDomainAid, loadFileDataBlockHash, loadParameters, loadToken));
 
     public CommandResponsePair ProcessInstallForMakeSelectable(Span<byte> applicationAid, Span<byte> privileges, Span<byte> installParameters, Span<byte> installToken)

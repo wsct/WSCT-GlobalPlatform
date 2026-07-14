@@ -293,8 +293,6 @@ public class GlobalPlatformConsoleService(IWSCTService wsctService, IGlobalPlatf
 
             AnsiConsole.Write(table);
 
-            wsctService.Release();
-
             return true;
         }
         catch (Exception e)
