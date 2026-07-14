@@ -92,17 +92,4 @@ public class GlobalPlatformException : Exception
             throw new GlobalPlatformException("Session keys not initialized: Call GenerateSessionKeys(...) first");
         }
     }
-
-    /// <summary>
-    /// Throws a <see cref="GlobalPlatformException"/> if the <see cref="ISecureChannelSpecifics"/> instance is null.
-    /// </summary>
-    /// <param name="argument">The <see cref="ISecureChannelSpecifics"/> instance to check.</param>
-    /// <exception cref="GlobalPlatformException"></exception>
-    public static void ThrowIfNull([NotNull] ISecureChannelSpecifics? argument)
-    {
-        if (argument is null)
-        {
-            throw new GlobalPlatformException("Something went wrong: SCP02 specific data is missing");
-        }
-    }
 }

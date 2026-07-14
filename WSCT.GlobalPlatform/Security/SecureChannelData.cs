@@ -42,12 +42,6 @@ public class SecureChannelData
 
     #endregion
 
-    #region >> Properties (SCPxx specifics)
-
-    public ISecureChannelSpecifics? Specifics { get; set; }
-
-    #endregion
-
     /// <summary>
     /// Initializes a new instance of the <see cref="SecureChannelData"/> class.
     /// </summary>

@@ -10,13 +10,17 @@ internal class Scp01 : ISecureChannelProtocol
     /// Instance shared with the <see cref="GlobalPlatformCard"/> instance.
     /// </summary>
     private readonly SecureChannelData _scpData;
+    private byte[] _lastCMac = [.. Constants.ICV];
+
+    public Scp01SubIdentifier SubIdentifier { get; init; }
 
     public Scp01(SecureChannelData scpData)
     {
         GlobalPlatformException.ThrowIfNull(scpData);
 
         _scpData = scpData;
-        _scpData.Specifics = new Scp01Specifics(_scpData.ScpDetails.Options);
+
+        SubIdentifier = new Scp01SubIdentifier(scpData.ScpDetails.Options);
     }
 
     /// <inheritdoc />
@@ -43,15 +47,11 @@ internal class Scp01 : ISecureChannelProtocol
     /// <inheritdoc />
     public SessionKeys GenerateSessionKeys()
     {
-        GlobalPlatformException.ThrowIfNull(_scpData.Specifics);
-
-        var scpSpecifics = (Scp01Specifics)_scpData.Specifics;
-
         GlobalPlatformException.ThrowIfNull(_scpData.Keys);
         GlobalPlatformException.ThrowIfNull(_scpData.CardChallenge, "Card challenge missing: Call ProcessInitializeUpdate(...) first");
         GlobalPlatformException.ThrowIfNull(_scpData.HostChallenge, "Host challenge missing: Call ProcessInitializeUpdate(...) first");
 
-        if (scpSpecifics.SubIdentifier.UseThreeKeys)
+        if (SubIdentifier.UseThreeKeys)
         {
             return Scp01Algorithms
                 .GenerateSessionKeys(_scpData.Keys, _scpData.CardChallenge, _scpData.HostChallenge);
@@ -71,19 +71,17 @@ internal class Scp01 : ISecureChannelProtocol
 
         /* For the EXTERNAL AUTHENTICATE command, the ICV is set to binary zeroes */
 
-        GlobalPlatformException.ThrowIfNull(_scpData.Specifics);
         GlobalPlatformException.ThrowIfNull(_scpData.SessionKeys);
 
-        var scpSpecifics = (Scp01Specifics)_scpData.Specifics;
-        scpSpecifics.LastCMac = Constants.ICV;
+        _lastCMac = Constants.ICV;
 
         cApdu.Cla |= 0x04;
         cApdu.Lc += 8;
 
         var mac = Scp01Algorithms
-            .GenerateCMac(_scpData.SessionKeys.CMac, scpSpecifics.LastCMac, cApdu.BinaryCommand);
+            .GenerateCMac(_scpData.SessionKeys.CMac, _lastCMac, cApdu.BinaryCommand);
 
-        scpSpecifics.LastCMac = mac;
+        _lastCMac = mac;
 
         var udc = new byte[cApdu.Lc];
         Array.Copy(cApdu.Udc, 0, udc, 0, cApdu.Lc - 8);
@@ -112,10 +110,7 @@ internal class Scp01 : ISecureChannelProtocol
 
     private CommandAPDU WrapForCMac(CommandAPDU cApdu)
     {
-        GlobalPlatformException.ThrowIfNull(_scpData.Specifics);
         GlobalPlatformException.ThrowIfNull(_scpData.SessionKeys);
-
-        var scpSpecifics = (Scp01Specifics)_scpData.Specifics;
 
         if ((_scpData.SecurityLevel & SecurityLevel.CMac) != 0)
         {
@@ -137,25 +132,25 @@ internal class Scp01 : ISecureChannelProtocol
             }
 
             byte[] iv;
-            if (scpSpecifics.SubIdentifier.UseIcvEncryptionForCMacSession)
+            if (SubIdentifier.UseIcvEncryptionForCMacSession)
             {
                 // D.1.5 ICV Encryption
                 // As an enhancement to the C-MAC mechanism, the ICV is encrypted before being applied to the calculation of the
                 // next C-MAC. The encryption mechanism used is triple DES with the C-MAC session key. The first ICV of a
                 // session, used to generate the C-MAC on the EXTERNAL AUTHENTICATE command, is not encrypted.
-                iv = scpSpecifics.LastCMac
-                   .EncryptTripleDesEcb(_scpData.SessionKeys.CMac, scpSpecifics.LastCMac);
+                iv = _lastCMac
+                   .EncryptTripleDesEcb(_scpData.SessionKeys.CMac, _lastCMac);
             }
             else
             {
-                iv = scpSpecifics.LastCMac;
+                iv = _lastCMac;
             }
 
             // Calculate the C-APDU C-MAC
             var mac = Scp01Algorithms
                 .GenerateCMac(_scpData.SessionKeys.CMac, iv, cApdu.BinaryCommand);
 
-            scpSpecifics.LastCMac = mac;
+            _lastCMac = mac;
 
             // Store C-MAC in last bytes of the UDC
             var udc = new byte[cApdu.Lc];

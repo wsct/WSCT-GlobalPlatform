@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 
-using WSCT.GlobalPlatform;
-
 namespace WSCT.GlobalPlatform.CommandLine.Services;
 
 public class GlobalPlatformServiceException : Exception
