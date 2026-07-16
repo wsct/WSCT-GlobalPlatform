@@ -13,7 +13,7 @@ public class Program
         var services = new ServiceCollection();
 
         // Services
-        services.AddSingleton<IWSCTService, WSCTService>();
+        services.AddSingleton<IWSCTService, WSCTStackService>();
         services.AddSingleton<IGlobalPlatformService, GlobalPlatformService>();
         services.AddSingleton<IGlobalPlatformConsoleService, GlobalPlatformConsoleService>();
 

@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
 using WSCT.Core;
+using WSCT.JCSimulator.Core;
+using WSCT.JCSimulator.Stack;
 using WSCT.Linq;
 using WSCT.Stack;
 using WSCT.Wrapper;
@@ -22,13 +24,15 @@ public class WSCTStackService(ILogger<WSCTService> logger) : IWSCTService
             return ErrorCode.InvalidHandle;
         }
 
-        var cardChannelCore = new CardChannelStack([new CardChannelLayer()]);
+        var cardChannelCore = new CardChannelStack([new JcsCardChannelLayer(), new CardChannelLayer()]);
 
         _cardChannel = cardChannelCore
             .ToT0Friendly()
             .ToObservable();
 
         _observer.Observe(_cardChannel);
+
+        cardChannelCore.Attach(_cardContext, readerName);
 
         var connectResult = _cardChannel
             .Connect(ShareMode.Exclusive, Protocol.Any);
@@ -62,7 +66,7 @@ public class WSCTStackService(ILogger<WSCTService> logger) : IWSCTService
 
     public ErrorCode Establish()
     {
-        _cardContext = new CardContextStack([new CardContextLayer()])
+        _cardContext = new CardContextStack([new JcsCardContextLayer(), new CardContextLayer()])
             .ToObservable();
 
         _observer.Observe(_cardContext);
