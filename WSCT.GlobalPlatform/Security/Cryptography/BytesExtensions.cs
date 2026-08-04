@@ -88,6 +88,16 @@ internal static class BytesExtensions
         return encryptor.TransformFinalBlock(input, 0, input.Length);
     }
 
+    public static byte[] EncryptAes(this byte[] input, Aes aes)
+    {
+        _ = input ?? throw new ArgumentNullException(nameof(input));
+        _ = aes ?? throw new ArgumentNullException(nameof(aes));
+
+        using var encryptor = aes.CreateEncryptor();
+
+        return encryptor.TransformFinalBlock(input, 0, input.Length);
+    }
+
     /// <summary>
     /// Encrypts the <paramref name="input"/> using 3DES-CBC algorithm with <paramref name="key"/> and <paramref name="iv"/>.
     /// </summary>
@@ -108,6 +118,20 @@ internal static class BytesExtensions
         tripleDes.Padding = PaddingMode.None;
 
         return input.EncryptTripleDes(tripleDes);
+    }
+
+    public static byte[] EncryptAesCbc(this byte[] input, byte[] key, byte[] iv)
+    {
+        _ = key ?? throw new ArgumentNullException(nameof(key));
+        _ = iv ?? throw new ArgumentNullException(nameof(iv));
+
+        using var aes = Aes.Create();
+        aes.Key = key;
+        aes.IV = iv;
+        aes.Mode = CipherMode.CBC;
+        aes.Padding = PaddingMode.None;
+
+        return input.EncryptAes(aes);
     }
 
     /// <summary>
@@ -228,6 +252,24 @@ internal static class BytesExtensions
         return mac;
     }
 
+    public static byte[] GenerateAesMac(this byte[] input, Aes aes, int inputOffset, int inputCount)
+    {
+        _ = aes ?? throw new ArgumentNullException(nameof(aes));
+
+        using var encryptor = aes.CreateEncryptor();
+
+        var blockSize = aes.IV.Length;
+        var mac = new byte[blockSize];
+        aes.IV.CopyTo(mac, 0);
+
+        for (var i = 0; i < (inputCount - inputOffset) / blockSize; i++)
+        {
+            _ = encryptor.TransformBlock(input, inputOffset + blockSize * i, blockSize, mac, 0);
+        }
+
+        return mac;
+    }
+
 
     /// <summary>
     /// Computes the MAC of <paramref name="input"/> using 3DES-CBC with <paramref name="key"/> and <paramref name="iv"/>.
@@ -239,6 +281,11 @@ internal static class BytesExtensions
     public static byte[] GenerateTripleDesMacCbc(this byte[] input, byte[] key, byte[] iv)
     {
         return input.GenerateTripleDesMacCbc(key, iv, 0, input.Length);
+    }
+
+    public static byte[] GenerateAesMacCbc(this byte[] input, byte[] key, byte[] iv)
+    {
+        return input.GenerateAesMacCbc(key, iv, 0, input.Length);
     }
 
     /// <summary>
@@ -262,6 +309,20 @@ internal static class BytesExtensions
         tripleDes.Padding = PaddingMode.None;
 
         return input.GenerateTripleDesMac(tripleDes, inputOffset, inputCount);
+    }
+
+    public static byte[] GenerateAesMacCbc(this byte[] input, byte[] key, byte[] iv, int inputOffset, int inputCount)
+    {
+        _ = key ?? throw new ArgumentNullException(nameof(key));
+        _ = iv ?? throw new ArgumentNullException(nameof(iv));
+
+        using var aes = Aes.Create();
+        aes.Key = key;
+        aes.IV = iv;
+        aes.Mode = CipherMode.CBC;
+        aes.Padding = PaddingMode.None;
+
+        return input.GenerateAesMac(aes, inputOffset, inputCount);
     }
 
     /// <summary>

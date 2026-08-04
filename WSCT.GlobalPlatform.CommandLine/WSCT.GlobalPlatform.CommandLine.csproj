@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -16,12 +16,14 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.2" />
     <PackageReference Include="Spectre.Console" Version="0.54.0" />
     <PackageReference Include="Spectre.Console.Cli" Version="0.53.1" />
-    <PackageReference Include="WSCT.JCSimulator" Version="1.0.0" />
-    <PackageReference Include="WSCT.Wrapper.Desktop" Version="1.5.0" />
+
+	  <PackageReference Include="WSCT.Wrapper.Desktop" Version="1.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\wsct\WSCT-JCSimulator\WSCT JCSimulator\WSCT JCSimulator.csproj" />
     <ProjectReference Include="..\WSCT.GlobalPlatform\WSCT.GlobalPlatform.csproj" />
+
   </ItemGroup>
 
 </Project>

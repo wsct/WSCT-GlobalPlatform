@@ -167,15 +167,23 @@ public class GlobalPlatformCard(ICardChannel cardChannel)
 
     public CommandResponsePair ProcessInitializeUpdate(SecureChannelProtocolDetails scp, byte keySetVersion, byte keyIdentifier, byte[] hostChallenge)
     {
-        _scpData = new SecureChannelData(scp, keySetVersion, keyIdentifier, hostChallenge);
+        _scpData = scp.Identifier switch // TODO Move this in a better place
+            {
+                1 => new Scp02SecureChannelData(scp, keySetVersion, keyIdentifier, hostChallenge),
+                2 => new Scp02SecureChannelData(scp, keySetVersion, keyIdentifier, hostChallenge),
+                3 => new Scp03SecureChannelData(scp, keySetVersion, keyIdentifier, hostChallenge),
+                _ => throw new GlobalPlatformException($"Unsupported SCP: {scp.Identifier:X2}"),
+            }; 
 
         _scp = scp.Identifier switch // TODO Move this in a better place
         {
             1 => new Security.Scp01.Scp01(_scpData),
             2 => new Security.Scp02.Scp02(_scpData),
+            3 => new Security.Scp03.Scp03((Scp03SecureChannelData)_scpData),
             _ => throw new GlobalPlatformException($"Unsupported SCP: {scp.Identifier:X2}"),
-        };
+        };  
 
+        
         var crp = new InitializeUpdateCommand(keySetVersion, keyIdentifier, hostChallenge)
             .Transmit(_cardChannel);
 
