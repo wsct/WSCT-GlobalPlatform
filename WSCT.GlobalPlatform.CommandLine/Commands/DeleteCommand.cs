@@ -6,7 +6,7 @@ namespace WSCT.GlobalPlatform.CommandLine.Commands;
 public class DeleteCommand(IGlobalPlatformConsoleService gpConsoleService)
     : Command<DeleteSettings>
 {
-    public override int Execute(CommandContext context, DeleteSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, DeleteSettings settings, CancellationToken cancellationToken)
     {
         var authParams = new AuthenticationParameters(settings.SEnc, settings.SMac, settings.Dek, settings.KeyVersion, settings.KeyIdentifier);
 

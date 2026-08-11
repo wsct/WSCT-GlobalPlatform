@@ -30,6 +30,15 @@ The current status of this project is *work in progress*.
   - [x] CMAC
   - [ ] RMAC
   - [x] CDEC
+- SCP03 support:
+  - [x] AES128 only
+  - [x] Mutual authentication (`INITIALIZE UPDATE`, `EXTERNAL AUTHENTICATE`)
+  - [x] Automatic wrapping / unwrapping of APDU
+  - [x] Session mode S8
+  - [ ] Session mode S16
+  - [x] CMAC
+  - [ ] RMAC
+  - [x] CDEC
 
 ## Some examples of usage
 

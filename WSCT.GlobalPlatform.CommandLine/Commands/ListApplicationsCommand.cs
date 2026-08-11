@@ -6,7 +6,7 @@ namespace WSCT.GlobalPlatform.CommandLine.Commands;
 public class ListApplicationsCommand(IGlobalPlatformConsoleService gpConsoleService)
    : Command<AuthenticationSettings>
 {
-    public override int Execute(CommandContext context, AuthenticationSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, AuthenticationSettings settings, CancellationToken cancellationToken)
     {
         var authParams = new AuthenticationParameters(settings.SEnc, settings.SMac, settings.Dek, settings.KeyVersion, settings.KeyIdentifier);
 

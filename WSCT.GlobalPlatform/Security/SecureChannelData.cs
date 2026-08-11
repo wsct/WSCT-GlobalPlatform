@@ -1,4 +1,4 @@
-﻿using WSCT.Helpers;
+using WSCT.Helpers;
 
 namespace WSCT.GlobalPlatform.Security;
 
@@ -24,6 +24,7 @@ public class SecureChannelData
     public byte[]? KeyInformation { get; private set; }
     public byte[]? CardChallenge { get; private set; }
     public byte[]? CardCryptogram { get; private set; }
+    public byte[]? SequenceCounter { get; private set; }
 
     #endregion
 
@@ -66,15 +67,26 @@ public class SecureChannelData
 
     public SecureChannelData ParseInitializeUpdateResponse(Span<byte> udr)
     {
-        if (udr.Length != expectedInitializeUpdateResponseLength)
+        if (udr.Length == expectedInitializeUpdateResponseLength)
         {
-            throw new GlobalPlatformException($"Something went wrong during the Initialize Update: Invalid UDR length (expected {expectedInitializeUpdateResponseLength} bytes, got {udr.Length})");
+            KeyDiversificationData = udr[..10].ToArray();
+            KeyInformation = udr[10..12].ToArray();
+            CardChallenge = udr[12..20].ToArray();
+            CardCryptogram = udr[20..28].ToArray();
+            SequenceCounter = [];
         }
-
-        KeyDiversificationData = udr[..10].ToArray();
-        KeyInformation = udr[10..12].ToArray();
-        CardChallenge = udr[12..20].ToArray();
-        CardCryptogram = udr[20..28].ToArray();
+        else if (udr.Length == 32)
+        {
+            KeyDiversificationData = udr[..10].ToArray();
+            KeyInformation = udr[10..13].ToArray();
+            CardChallenge = udr[13..21].ToArray();
+            CardCryptogram = udr[21..29].ToArray();
+            SequenceCounter = udr[29..32].ToArray();
+        }
+        else
+        {
+            throw new GlobalPlatformException($"Something went wrong during the Initialize Update: Invalid UDR length (expected 28 or 32 bytes, got {udr.Length})");
+        }
 
         return this;
     }
@@ -86,7 +98,8 @@ public class SecureChannelData
     {
         return $"[{ScpDetails}] [Key Version:{KeyVersion:X2}, Identifier:{KeyIdentifier:X2}] " +
             $"[DiversificationData:{KeyDiversificationData.ToHexa()}] [KeyInformation:{KeyInformation.ToHexa()}] " +
-            $"[CardChallenge:{CardChallenge.ToHexa()}] [CardCryptogram:{CardCryptogram.ToHexa()}]  (" +
+            $"[CardChallenge:{CardChallenge.ToHexa()}] [CardCryptogram:{CardCryptogram.ToHexa()}] " +
+            $"[SequenceCounter:{SequenceCounter.ToHexa()}] (" +
             $"[Keys {Keys}] [Session {SessionKeys}]";
     }
 

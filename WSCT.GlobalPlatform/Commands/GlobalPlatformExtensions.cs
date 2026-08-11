@@ -38,7 +38,8 @@ public static class GlobalPlatformExtensions
     private static GetStatusCommand.ResponseFormat GuessBestResponseFormat(GlobalPlatformCard gpCard)
     {
         // Guess best response format based on Card Data format when previously retrieved
-        if (String.Compare(gpCard.CardData?.GlobalPlatformVersion.ToHexa('\0'), "020101") >= 0)
+        if (String.Compare(gpCard.CardData?.GlobalPlatformVersion.ToHexa('\0'), "020101") >= 0
+            || String.Compare(gpCard.CardData?.GlobalPlatformVersion.ToHexa('\0'), "0202") >= 0)
         {
             return GetStatusCommand.ResponseFormat.Tlv;
         }

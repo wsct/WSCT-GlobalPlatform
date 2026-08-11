@@ -6,7 +6,7 @@ namespace WSCT.GlobalPlatform.CommandLine.Commands;
 public class CardManagerCommand(IGlobalPlatformConsoleService gpConsoleService)
     : Command
 {
-    public override int Execute(CommandContext context, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, CancellationToken cancellationToken)
     {
         var result = gpConsoleService.SelectCardManager();
 

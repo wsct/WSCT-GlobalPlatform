@@ -1,4 +1,4 @@
-﻿using WSCT.Core;
+using WSCT.Core;
 using WSCT.GlobalPlatform.Commands;
 using WSCT.GlobalPlatform.Security;
 using WSCT.ISO7816;
@@ -173,6 +173,7 @@ public class GlobalPlatformCard(ICardChannel cardChannel)
         {
             1 => new Security.Scp01.Scp01(_scpData),
             2 => new Security.Scp02.Scp02(_scpData),
+            3 => new Security.Scp03.Scp03(_scpData),
             _ => throw new GlobalPlatformException($"Unsupported SCP: {scp.Identifier:X2}"),
         };
 

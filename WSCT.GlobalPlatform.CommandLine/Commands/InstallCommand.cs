@@ -6,7 +6,7 @@ namespace WSCT.GlobalPlatform.CommandLine.Commands;
 public class InstallCommand(IGlobalPlatformConsoleService gpConsoleService)
     : Command<InstallSettings>
 {
-    public override int Execute(CommandContext context, InstallSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, InstallSettings settings, CancellationToken cancellationToken)
     {
         var authParams = new AuthenticationParameters(settings.SEnc, settings.SMac, settings.Dek, settings.KeyVersion, settings.KeyIdentifier);
 
