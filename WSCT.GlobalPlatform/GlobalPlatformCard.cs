@@ -1,9 +1,9 @@
 using WSCT.Core;
+using WSCT.Core.Fluent.Helpers;
 using WSCT.GlobalPlatform.Commands;
+using WSCT.GlobalPlatform.JavaCard;
 using WSCT.GlobalPlatform.Security;
 using WSCT.ISO7816;
-using WSCT.Core.Fluent.Helpers;
-using WSCT.GlobalPlatform.JavaCard;
 
 namespace WSCT.GlobalPlatform;
 
@@ -150,6 +150,38 @@ public class GlobalPlatformCard(ICardChannel cardChannel)
         if (crp.RApdu.StatusWord == 0x9000)
         {
             _cardData = CardData.Create(crp.RApdu.Udr);
+        }
+
+        return crp;
+    }
+
+    /// <summary>
+    /// Processes a GET STATUS command to retrieve information about an application.<br/>
+    /// Handles SW1=0x6310 (More data available) by sending subsequent GET STATUS commands with occurrence=Next until SW1!=0x6310. The responses are concatenated and returned in a single CommandResponsePair.
+    /// </summary>
+    /// <param name="subset"></param>
+    /// <param name="applicationAid">AID of the targeted application</param>
+    /// <param name="responseFormat">Note that only TLV is currently supported</param>
+    /// <returns></returns>
+    public CommandResponsePair ProcessGetStatus(GetStatusCommand.Subset subset, Span<byte> applicationAid, GetStatusCommand.ResponseFormat responseFormat)
+    {
+        var occurrence = GetStatusCommand.Occurrence.FirstOrAll;
+        List<byte> response = [];
+        CommandResponsePair crp;
+        
+        do
+        {
+            crp = ProcessCommand(new GetStatusCommand(subset, applicationAid, occurrence, responseFormat));
+
+            response.AddRange(crp.RApdu.Udr);
+
+            occurrence = GetStatusCommand.Occurrence.Next;
+        }
+        while (crp.RApdu.StatusWord == 0x6310);
+
+        if (crp.RApdu.StatusWord == 0x9000)
+        {
+            crp.RApdu.Udr = [.. response];
         }
 
         return crp;

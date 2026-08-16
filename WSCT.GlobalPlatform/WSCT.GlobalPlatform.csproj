@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <VersionPrefix>1.2.0</VersionPrefix>
+	  <VersionPrefix>1.3.0</VersionPrefix>
 	  <VersionSuffix></VersionSuffix>
 	  <PackageProjectUrl>https://github.com/wsct/WSCT-GlobalPlatform</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
@@ -28,6 +28,12 @@
 
   <ItemGroup>
     <PackageReference Include="WSCT.Core" Version="6.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>WSCT.GlobalPlatform.Test</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>

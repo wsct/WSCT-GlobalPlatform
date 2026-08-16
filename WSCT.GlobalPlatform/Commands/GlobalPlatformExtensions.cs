@@ -11,35 +11,34 @@ public static class GlobalPlatformExtensions
             .ProcessCommand(new GetStatusCommand(subset, applicationAid, occurrence, responseFormat));
     }
 
-    public static CommandResponsePair ProcessGetIsdStatusCommand(this GlobalPlatformCard gpCard, Span<byte> applicationAid, GetStatusCommand.Occurrence occurrence = GetStatusCommand.Occurrence.FirstOrAll)
+    public static CommandResponsePair ProcessGetIsdStatusCommand(this GlobalPlatformCard gpCard, Span<byte> applicationAid)
     {
         return gpCard
-            .ProcessCommand(new GetStatusCommand(GetStatusCommand.Subset.IssuerSecurityDomain, applicationAid, occurrence, GuessBestResponseFormat(gpCard)));
+            .ProcessGetStatus(GetStatusCommand.Subset.IssuerSecurityDomain, applicationAid, gpCard.GuessBestResponseFormat());
     }
 
-    public static CommandResponsePair ProcessGetAppAndSsdStatusCommand(this GlobalPlatformCard gpCard, Span<byte> applicationAid, GetStatusCommand.Occurrence occurrence = GetStatusCommand.Occurrence.FirstOrAll)
+    public static CommandResponsePair ProcessGetAppAndSsdStatusCommand(this GlobalPlatformCard gpCard, Span<byte> applicationAid)
     {
         return gpCard
-            .ProcessCommand(new GetStatusCommand(GetStatusCommand.Subset.ApplicationAndSupplementarySecurityDomains, applicationAid, occurrence, GuessBestResponseFormat(gpCard)));
+            .ProcessGetStatus(GetStatusCommand.Subset.ApplicationAndSupplementarySecurityDomains, applicationAid, gpCard.GuessBestResponseFormat());
     }
 
-    public static CommandResponsePair ProcessGetExecutableLoadFilesStatusCommand(this GlobalPlatformCard gpCard, Span<byte> applicationAid, GetStatusCommand.Occurrence occurrence = GetStatusCommand.Occurrence.FirstOrAll)
+    public static CommandResponsePair ProcessGetExecutableLoadFilesStatusCommand(this GlobalPlatformCard gpCard, Span<byte> applicationAid)
     {
         return gpCard
-            .ProcessCommand(new GetStatusCommand(GetStatusCommand.Subset.ExecutableLoadFiles, applicationAid, occurrence, GuessBestResponseFormat(gpCard)));
+            .ProcessGetStatus(GetStatusCommand.Subset.ExecutableLoadFiles, applicationAid, gpCard.GuessBestResponseFormat());
     }
 
-    public static CommandResponsePair ProcessGetExecutableLoadFilesAndModulesStatusCommand(this GlobalPlatformCard gpCard, Span<byte> applicationAid, GetStatusCommand.Occurrence occurrence = GetStatusCommand.Occurrence.FirstOrAll)
+    public static CommandResponsePair ProcessGetExecutableLoadFilesAndModulesStatusCommand(this GlobalPlatformCard gpCard, Span<byte> applicationAid)
     {
         return gpCard
-            .ProcessCommand(new GetStatusCommand(GetStatusCommand.Subset.ExecutableLoadFilesAndTheirModules, applicationAid, occurrence, GuessBestResponseFormat(gpCard)));
+            .ProcessGetStatus(GetStatusCommand.Subset.ExecutableLoadFilesAndTheirModules, applicationAid, gpCard.GuessBestResponseFormat());
     }
 
-    private static GetStatusCommand.ResponseFormat GuessBestResponseFormat(GlobalPlatformCard gpCard)
+    private static GetStatusCommand.ResponseFormat GuessBestResponseFormat(this GlobalPlatformCard gpCard)
     {
         // Guess best response format based on Card Data format when previously retrieved
-        if (String.Compare(gpCard.CardData?.GlobalPlatformVersion.ToHexa('\0'), "020101") >= 0
-            || String.Compare(gpCard.CardData?.GlobalPlatformVersion.ToHexa('\0'), "0202") >= 0)
+        if (String.Compare(gpCard.CardData?.GlobalPlatformVersion.ToHexa('\0'), "020101") >= 0)
         {
             return GetStatusCommand.ResponseFormat.Tlv;
         }
