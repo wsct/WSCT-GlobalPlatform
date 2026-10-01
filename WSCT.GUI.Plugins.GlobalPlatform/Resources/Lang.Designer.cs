@@ -22,7 +22,7 @@ namespace WSCT.GUI.Plugins.GlobalPlatform.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Lang {
+    public class Lang {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace WSCT.GUI.Plugins.GlobalPlatform.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WSCT.GUI.Plugins.GlobalPlatform.Resources.Lang", typeof(Lang).Assembly);
@@ -51,7 +51,7 @@ namespace WSCT.GUI.Plugins.GlobalPlatform.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace WSCT.GUI.Plugins.GlobalPlatform.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Plugin handling GlobalPlatform compliant cards.
         /// </summary>
-        internal static string PluginDescription {
+        public static string PluginDescription {
             get {
                 return ResourceManager.GetString("PluginDescription", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace WSCT.GUI.Plugins.GlobalPlatform.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Global Platform.
         /// </summary>
-        internal static string PluginName {
+        public static string PluginName {
             get {
                 return ResourceManager.GetString("PluginName", resourceCulture);
             }

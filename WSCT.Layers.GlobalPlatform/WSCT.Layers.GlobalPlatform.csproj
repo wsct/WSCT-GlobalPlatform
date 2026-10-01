@@ -14,7 +14,15 @@
 
 	<PropertyGroup>
 		<PackageId>WSCT.Layers.GlobalPlatform</PackageId>
-		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<Description>WSCT layer library for working with GlobalPlatform smartcards.</Description>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Description>
+			Defines some commands for working with GlobalPlatform smartcards.
+			It is intended for use at ENSICAEN, for educational purposes (e-payment and security).
+		</Description>
+	</PropertyGroup>
+
+	<PropertyGroup>
 	</PropertyGroup>
 
 	<PropertyGroup>
