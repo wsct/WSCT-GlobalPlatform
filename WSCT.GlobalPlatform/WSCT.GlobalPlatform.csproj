@@ -1,39 +1,29 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	  <VersionPrefix>1.3.0</VersionPrefix>
-	  <VersionSuffix></VersionSuffix>
-	  <PackageProjectUrl>https://github.com/wsct/WSCT-GlobalPlatform</PackageProjectUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>wsct;smartcard;globalplatform</PackageTags>
-    <RepositoryUrl>https://github.com/wsct/WSCT-GlobalPlatform</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Authors>Sylvain Vernois</Authors>
-    <PackageOutputPath>$(OutputPath)</PackageOutputPath>
-    <Title>WSCT GlobalPlatform Library</Title>
-    <Description>A library implementing some parts of GlobalPlatform for the WSCT framework.</Description>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<VersionPrefix>1.3.0</VersionPrefix>
+		<VersionSuffix></VersionSuffix>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<PropertyGroup>
+		<PackageId>WSCT.GlobalPlatform</PackageId>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Description>
+			A library implementing some parts of GlobalPlatform for the WSCT framework.
+		</Description>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="WSCT.Core" Version="6.7.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>WSCT.GlobalPlatform.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="WSCT.Core" />
+	</ItemGroup>
 
 </Project>

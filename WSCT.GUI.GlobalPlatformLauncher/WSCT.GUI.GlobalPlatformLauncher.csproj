@@ -1,34 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<VersionPrefix>1.0.0</VersionPrefix>
+		<VersionSuffix></VersionSuffix>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Stack.Channel.xml" />
-    <None Remove="Stack.Context.xml" />
-  </ItemGroup>
+	<PropertyGroup>
+		<PackageId>WSCT.GUI.GlobalPlatformLauncher</PackageId>
+		<Description>Launcher of WSCT GUI configured with GlobalPlatform plugins.</Description>
+		<ApplicationIcon></ApplicationIcon>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="Stack.Channel.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Stack.Context.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<PropertyGroup>
+		<UseWindowsForms>true</UseWindowsForms>
+		<Win32Resource />
+		<StartupObject />
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="WSCT.GUI" Version="6.2.1" />
-    <PackageReference Include="WSCT.Plugin.ISO7816Tools" Version="5.2.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Stack.Channel.xml" />
+		<None Remove="Stack.Context.xml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WSCT.GUI.Plugins.GlobalPlatform\WSCT.GUI.Plugins.GlobalPlatform.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="WSCT.GUI" />
+		<PackageReference Include="WSCT.JCSimulator" />
+		<PackageReference Include="WSCT.Plugin.ISO7816Tools" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\WSCT.GUI.Plugins.GlobalPlatform\WSCT.GUI.Plugins.GlobalPlatform.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Stack.Channel.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Stack.Context.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
 </Project>

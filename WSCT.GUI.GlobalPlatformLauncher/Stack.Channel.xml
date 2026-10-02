@@ -14,6 +14,12 @@
 		<pathToDll></pathToDll>
 	</layer>
 
+	<layer name="JavaCard Simulator Channel">
+		<dll>WSCT JCSimulator.dll</dll>
+		<className>WSCT.JCSimulator.Stack.JcsCardChannelLayer</className>
+		<pathToDll></pathToDll>
+	</layer>
+
 	<layer name="WinSCard Core Channel">
 		<dll>WSCT.Wrapper.Desktop.dll</dll>
 		<className>WSCT.Wrapper.Desktop.Stack.CardChannelLayer</className>
