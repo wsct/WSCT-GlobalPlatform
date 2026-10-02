@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<VersionPrefix>1.0.0</VersionPrefix>
+		<VersionSuffix></VersionSuffix>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>WSCT.GUI.Plugins.GlobalPlatform</PackageId>
+		<Description>Plugin GlobalPlatform for WSCT.</Description>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
+		<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+		<Win32Resource />
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>Plugins.GlobalPlatform</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="WSCT.GUI.Plugins.LayerInteractive" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\WSCT.GlobalPlatform\WSCT.GlobalPlatform.csproj" />
+		<ProjectReference Include="..\WSCT.Layers.GlobalPlatform\WSCT.Layers.GlobalPlatform.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Resources\Lang.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Lang.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\Lang.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Lang.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+</Project>

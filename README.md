@@ -159,3 +159,9 @@ See [wsct-gp](WSCT.GlobalPlatform.CommandLine/README.md) for more information.
 ```bash
 wsct-gp --list-applications
 ```
+
+## WSCT GUI for GlobalPlatform and JCSimulator
+
+- Publishes a fake reader `WSCT Javacard Simulator Reader` to communicate with the Oracle JavaCard Simulator.
+- Integrates a GlobalPlatform plugin that allows simple GET CARD DATA and AUTHENTICATE commands (with keys entry).
+- Integrates a GlobalPlatform layer that encrypts/decrypts C-APDU and R-APDU is bit 3 of CLA is set.

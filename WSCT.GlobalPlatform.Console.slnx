@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="WSCT.GlobalPlatform.CommandLine/WSCT.GlobalPlatform.CommandLine.csproj" />
+  <Project Path="WSCT.GlobalPlatform/WSCT.GlobalPlatform.csproj" />
+  <Project Path="WSCT.GUI.GlobalPlatformLauncher/WSCT.GUI.GlobalPlatformLauncher.csproj" />
+  <Project Path="WSCT.GUI.Plugins.GlobalPlatform/WSCT.GUI.Plugins.GlobalPlatform.csproj" />
+  <Project Path="WSCT.Layers.GlobalPlatform/WSCT.Layers.GlobalPlatform.csproj" />
+</Solution>
