@@ -4,18 +4,18 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
- 		<PackageVersion Include="WSCT.Core" Version="6.7.1" />
-		<PackageVersion Include="WSCT.GUI" Version="6.2.1" />
-		<PackageVersion Include="WSCT.GUI.Plugins" Version="5.2.1" />
-		<PackageVersion Include="WSCT.GUI.Plugins.LayerInteractive" Version="3.2.1" />
-		<PackageVersion Include="WSCT.JCSimulator" Version="1.1.0" />
-		<PackageVersion Include="WSCT.Plugin.ISO7816Tools" Version="5.2.3" />
-		<PackageVersion Include="WSCT.Wrapper.Desktop" Version="1.5.0" />
+    <PackageVersion Include="WSCT.Core" Version="6.7.1" />
+    <PackageVersion Include="WSCT.GUI" Version="6.2.1" />
+    <PackageVersion Include="WSCT.GUI.Plugins" Version="5.2.1" />
+    <PackageVersion Include="WSCT.GUI.Plugins.LayerInteractive" Version="3.2.1" />
+    <PackageVersion Include="WSCT.JCSimulator" Version="1.2.0" />
+    <PackageVersion Include="WSCT.Plugin.ISO7816Tools" Version="5.2.3" />
+    <PackageVersion Include="WSCT.Wrapper.Desktop" Version="1.5.0" />
   </ItemGroup>
   <ItemGroup>
-		<PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
-		<PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.11" />
-		<PackageVersion Include="Spectre.Console" Version="0.57.2" />
-		<PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.11" />
+    <PackageVersion Include="Spectre.Console" Version="0.57.2" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
   </ItemGroup>
 </Project>
